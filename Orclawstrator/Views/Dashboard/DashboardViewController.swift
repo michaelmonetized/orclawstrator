@@ -11,6 +11,9 @@ class DashboardViewController: NSViewController {
     // MARK: - Data
     private var projects: [Project] = []
     private let projectScanner = ProjectScanner.shared
+    // TODO: Add when services implemented
+    // private let openClawService = OpenClawService.shared
+    // private let vercelService = VercelService.shared
     
     // MARK: - Column Identifiers
     private enum Column: String, CaseIterable {
@@ -85,6 +88,8 @@ class DashboardViewController: NSViewController {
         setupHeaderView()
         setupTableView()
         loadProjects()
+        // TODO: Add when OpenClaw service implemented
+        // setupOpenClawConnection()
     }
     
     // MARK: - Setup

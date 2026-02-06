@@ -130,6 +130,11 @@ class Project: Identifiable {
     var hasWarning: Bool = false
     var warningMessage: String?
     
+    // Integration flags
+    var hasGitHub: Bool = false
+    var hasGraphite: Bool = false
+    var hasVercel: Bool = false
+    
     init(name: String, path: String) {
         self.id = UUID()
         self.name = name

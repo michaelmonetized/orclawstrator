@@ -1,27 +1,18 @@
 import Cocoa
 
-@main
 class AppDelegate: NSObject, NSApplicationDelegate {
-    var mainWindowController: MainWindowController?
+    var windowController: MainWindowController!
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Create and show main window
-        mainWindowController = MainWindowController()
-        mainWindowController?.showWindow(nil)
+        // Create main window controller
+        windowController = MainWindowController()
+        windowController.showWindow(nil)
         
-        // Activate the app
+        // Activate app
         NSApp.activate(ignoringOtherApps: true)
     }
     
-    func applicationWillTerminate(_ notification: Notification) {
-        // Cleanup
-    }
-    
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return true
-    }
-    
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
-        return true
+    func applicationShouldTerminateAfterLastWindowClosed(_ app: NSApplication) -> Bool {
+        true
     }
 }

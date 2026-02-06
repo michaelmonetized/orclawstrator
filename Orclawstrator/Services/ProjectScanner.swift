@@ -5,6 +5,10 @@ class ProjectScanner {
     
     static let shared = ProjectScanner()
     private let gitService = GitService.shared
+    // TODO: Add when services are implemented
+    // private let gitHubService = GitHubService.shared
+    // private let graphiteService = GraphiteService.shared
+    // private let vercelService = VercelService.shared
     private let fileManager = FileManager.default
     
     private init() {}
@@ -52,6 +56,25 @@ class ProjectScanner {
             
             // Get git state
             project.gitState = gitService.getGitState(for: itemPath)
+            
+            // TODO: Implement when services are added
+            // Get GitHub state (issues/PRs)
+            // let gitHubState = gitHubService.getGitHubState(for: itemPath)
+            // project.issueCount = gitHubState.issueCount
+            // project.hasGitHub = gitHubState.hasGitHub
+            
+            // Get Graphite state (stacked PRs)
+            // let graphiteState = graphiteService.getGraphiteState(for: itemPath)
+            // project.stackCount = graphiteState.stackCount
+            // project.prComments = graphiteState.commentCount
+            // project.hasGraphite = graphiteState.hasGraphite
+            
+            // Get Vercel state (build status)
+            // let vercelState = vercelService.getVercelState(for: itemPath)
+            // if let deployment = vercelState.latestDeployment {
+            //     project.buildStatus = deployment.state.buildStatus
+            // }
+            // project.hasVercel = vercelState.hasVercel
             
             // Check for warnings
             checkWarnings(for: project)

@@ -1,0 +1,510 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.Orclawstrator-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/sources",
+      "importPath" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/App/AppDelegate.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/App/MainWindowController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitHubService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GraphiteService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/OpenClawService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ProjectScanner.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ShellExecutor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/sources"
+        }
+      ],
+      "isLibrary" : false,
+      "moduleName" : "Orclawstrator",
+      "moduleOutputPath" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Modules/Orclawstrator.swiftmodule",
+      "objects" : [
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/AppDelegate.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitHubService.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitService.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GraphiteService.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/OpenClawService.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectScanner.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ShellExecutor.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-Xfrontend",
+        "-entry-point-function-name",
+        "-Xfrontend",
+        "Orclawstrator_main",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "orclawstrator"
+      ],
+      "outputFileMapPath" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/AppDelegate.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitHubService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GraphiteService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/OpenClawService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectScanner.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ShellExecutor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Modules/Orclawstrator.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/App/AppDelegate.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/App/MainWindowController.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitHubService.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitService.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GraphiteService.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/OpenClawService.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ProjectScanner.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ShellExecutor.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift"
+      ],
+      "tempsPath" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "Orclawstrator" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "Orclawstrator",
+      "-package-name",
+      "orclawstrator",
+      "-c",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/App/AppDelegate.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/App/MainWindowController.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitHubService.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitService.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GraphiteService.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/OpenClawService.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ProjectScanner.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ShellExecutor.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift",
+      "-I",
+      "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-Xfrontend",
+      "-entry-point-function-name",
+      "-Xfrontend",
+      "Orclawstrator_main",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "orclawstrator",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "Orclawstrator" : [
+
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator-entitlement.plist" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<entitlement-plist>"
+        },
+        {
+          "kind" : "virtual",
+          "name" : "<com.apple.security.get-task-allow>"
+        }
+      ],
+      "outputFilePath" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator-entitlement.plist"
+    },
+    "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/App/AppDelegate.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/App/MainWindowController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitHubService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GraphiteService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/OpenClawService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ProjectScanner.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ShellExecutor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/sources"
+    },
+    "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/AppDelegate.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitHubService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GraphiteService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/OpenClawService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectScanner.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ShellExecutor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.product/Objects.LinkFileList"
+    },
+    "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+/Users/michael/Projects/orclawstrator/Orclawstrator/App/AppDelegate.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/App/MainWindowController.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitHubService.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitService.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GraphiteService.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Services/OpenClawService.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ProjectScanner.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ShellExecutor.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift

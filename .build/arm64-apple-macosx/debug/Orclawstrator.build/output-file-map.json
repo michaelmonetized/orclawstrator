@@ -1,0 +1,103 @@
+{
+  "": {
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/master.swiftdeps"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/App/AppDelegate.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/AppDelegate.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/AppDelegate.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/AppDelegate~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/AppDelegate.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/AppDelegate.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/App/MainWindowController.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitHubService.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitHubService.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitHubService.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitHubService~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitHubService.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitHubService.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitService.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitService.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitService.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitService~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitService.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitService.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GraphiteService.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GraphiteService.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GraphiteService.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GraphiteService~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GraphiteService.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GraphiteService.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/OpenClawService.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/OpenClawService.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/OpenClawService.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/OpenClawService~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/OpenClawService.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/OpenClawService.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ProjectScanner.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectScanner.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectScanner.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectScanner~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectScanner.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectScanner.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ShellExecutor.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ShellExecutor.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ShellExecutor.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ShellExecutor~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ShellExecutor.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ShellExecutor.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.dia"
+  }
+}
