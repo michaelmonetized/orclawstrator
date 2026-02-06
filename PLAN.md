@@ -3,23 +3,23 @@
 ## Phase 1: Foundation (MVP)
 
 ### 1.1 Project Setup
-- [ ] Create Xcode project with AppKit template
+- [x] Create Xcode project with AppKit template
 - [ ] Configure Swift Package Manager dependencies
-- [ ] Set up project structure (MVC or MVVM)
-- [ ] Configure code signing and entitlements
+- [x] Set up project structure (MVC or MVVM)
+- [x] Configure code signing and entitlements
 - [ ] Set up SQLite for local state
 
 ### 1.2 Core Data Models
-- [ ] `Project` — path, name, language, timestamps
+- [x] `Project` — path, name, language, timestamps
 - [ ] `Agent` — id, name, persona, status
 - [ ] `Session` — project assignment, token usage
-- [ ] `BuildStatus` — vercel deployment state
-- [ ] `GitState` — branches, staged, untracked, stacks
+- [x] `BuildStatus` — vercel deployment state
+- [x] `GitState` — branches, staged, untracked, stacks
 - [ ] `Message` — inbox items from agents
 
 ### 1.3 Shell Integration Layer
-- [ ] Create `ShellExecutor` for running CLI commands
-- [ ] Git integration (`git status`, `git log`, `git branch`)
+- [x] Create `ShellExecutor` for running CLI commands
+- [x] Git integration (`git status`, `git log`, `git branch`)
 - [ ] GitHub CLI integration (`gh issue list`, `gh pr list`)
 - [ ] Graphite CLI integration (`gt log`, `gt stack`)
 - [ ] Vercel CLI integration (`vercel ls`, `vercel inspect`)
@@ -35,29 +35,29 @@
 ## Phase 2: Dashboard View
 
 ### 2.1 Main Window
-- [ ] NSWindow with custom title bar (traffic lights repositioned)
-- [ ] Dark theme with gradient background
-- [ ] Top bar with stats (projects, builds, agents, tokens)
-- [ ] Responsive layout
+- [x] NSWindow with custom title bar (traffic lights repositioned)
+- [x] Dark theme with gradient background
+- [x] Top bar with stats (projects, builds, agents, tokens)
+- [x] Responsive layout
 
 ### 2.2 Project Table
-- [ ] NSTableView with custom cells
-- [ ] Columns: Name, Agent, Branches, Active Branch, Issues, Stacks, Untracked, Staged, Age, Last Main, Last Branch, PR Comments, Build Status
-- [ ] Language icons (Swift, TS, Rust, C, Terminal)
-- [ ] Color-coded status (red untracked, green staged)
-- [ ] Warning indicators (yellow/orange triangles)
-- [ ] Action buttons row (open, roadmap, readme, posthog, plan, add)
+- [x] NSTableView with custom cells
+- [x] Columns: Name, Agent, Branches, Active Branch, Issues, Stacks, Untracked, Staged, Age, Last Main, Last Branch, PR Comments, Build Status
+- [x] Language icons (Swift, TS, Rust, C, Terminal)
+- [x] Color-coded status (red untracked, green staged)
+- [x] Warning indicators (yellow/orange triangles)
+- [x] Action buttons row (open, roadmap, readme, posthog, plan, add)
 
 ### 2.3 Left Sidebar
-- [ ] Chat input field (NSTextField)
-- [ ] "+ New Project" button
-- [ ] Recent Chats list (NSOutlineView)
+- [x] Chat input field (NSTextField)
+- [x] "+ New Project" button
+- [x] Recent Chats list (NSOutlineView)
 - [ ] Collapsible sections
 
 ### 2.4 Status Bar
-- [ ] Connection indicator (green/red dot)
-- [ ] Status text (Connected | Idle | agent main)
-- [ ] Model/session info on right
+- [x] Connection indicator (green/red dot)
+- [x] Status text (Connected | Idle | agent main)
+- [x] Model/session info on right
 
 ---
 
@@ -232,8 +232,8 @@ Orclawstrator/
 
 | Milestone | Target | Status |
 |-----------|--------|--------|
-| M1: Window + Table | Week 1 | ⬜ |
-| M2: Git Integration | Week 2 | ⬜ |
+| M1: Window + Table | Week 1 | ✅ |
+| M2: Git Integration | Week 2 | 🟡 In Progress |
 | M3: OpenClaw Integration | Week 3 | ⬜ |
 | M4: Project Detail View | Week 4 | ⬜ |
 | M5: Inbox + Polish | Week 5 | ⬜ |
