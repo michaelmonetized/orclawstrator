@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 
 /// Service for Git CLI operations

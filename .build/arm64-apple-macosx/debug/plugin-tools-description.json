@@ -32,6 +32,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Database/DatabaseManager.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift"
         },
         {
@@ -72,7 +76,15 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift"
         },
         {
           "kind" : "file",
@@ -93,6 +105,7 @@
       "objects" : [
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/AppDelegate.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DatabaseManager.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitHubService.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GitService.swift.o",
@@ -103,7 +116,9 @@
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.swift.o"
       ],
       "otherArguments" : [
@@ -173,6 +188,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DatabaseManager.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.swift.o"
         },
         {
@@ -213,7 +232,15 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.swift.o"
         },
         {
           "kind" : "file",
@@ -228,6 +255,7 @@
       "sources" : [
         "/Users/michael/Projects/orclawstrator/Orclawstrator/App/AppDelegate.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/App/MainWindowController.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Database/DatabaseManager.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitHubService.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitService.swift",
@@ -238,7 +266,9 @@
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift"
       ],
       "tempsPath" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build",
@@ -258,6 +288,7 @@
       "-c",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/App/AppDelegate.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/App/MainWindowController.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Database/DatabaseManager.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitHubService.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitService.swift",
@@ -268,7 +299,9 @@
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift",
       "-I",
       "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Modules",
@@ -377,6 +410,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Database/DatabaseManager.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift"
         },
         {
@@ -417,7 +454,15 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift"
         },
         {
           "kind" : "file",
@@ -439,7 +484,15 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DatabaseManager.swift.o"
         },
         {
           "kind" : "file",
@@ -464,6 +517,10 @@
         {
           "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.swift.o"
         },
         {
           "kind" : "file",

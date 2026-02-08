@@ -16,6 +16,13 @@
     "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.swiftdeps",
     "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainWindowController.dia"
   },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Database/DatabaseManager.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DatabaseManager.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DatabaseManager.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DatabaseManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DatabaseManager.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DatabaseManager.dia"
+  },
   "/Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift": {
     "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.d",
     "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/Project.swift.o",
@@ -86,12 +93,26 @@
     "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swiftdeps",
     "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.dia"
   },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.dia"
+  },
   "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift": {
     "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.d",
     "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o",
     "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController~partial.swiftmodule",
     "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swiftdeps",
     "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.dia"
   },
   "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift": {
     "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.d",

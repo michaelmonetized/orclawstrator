@@ -1,5 +1,6 @@
 /Users/michael/Projects/orclawstrator/Orclawstrator/App/AppDelegate.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/App/MainWindowController.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Database/DatabaseManager.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Models/Project.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitHubService.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Services/GitService.swift
@@ -10,5 +11,7 @@
 /Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/main.swift

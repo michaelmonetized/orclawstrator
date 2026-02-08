@@ -11,9 +11,11 @@ class DashboardViewController: NSViewController {
     // MARK: - Data
     private var projects: [Project] = []
     private let projectScanner = ProjectScanner.shared
-    // TODO: Add when services implemented
-    // private let openClawService = OpenClawService.shared
-    // private let vercelService = VercelService.shared
+    private let openClawService = OpenClawService.shared
+    private let vercelService = VercelService.shared
+    
+    // MARK: - Callbacks
+    var onProjectSelected: ((Project) -> Void)?
     
     // MARK: - Column Identifiers
     private enum Column: String, CaseIterable {
@@ -88,8 +90,8 @@ class DashboardViewController: NSViewController {
         setupHeaderView()
         setupTableView()
         loadProjects()
-        // TODO: Add when OpenClaw service implemented
-        // setupOpenClawConnection()
+        setupOpenClawConnection()
+        startAgentStatsPolling()
     }
     
     // MARK: - Setup
@@ -162,9 +164,7 @@ class DashboardViewController: NSViewController {
             tableColumn.maxWidth = column == .name ? 300 : column.width * 2
             
             // Header text color
-            if let headerCell = tableColumn.headerCell as? NSTableHeaderCell {
-                headerCell.textColor = NSColor.white.withAlphaComponent(0.7)
-            }
+            tableColumn.headerCell.textColor = Catppuccin.subtext0
             
             tableView.addTableColumn(tableColumn)
         }
@@ -180,9 +180,11 @@ class DashboardViewController: NSViewController {
     // MARK: - Data Loading
     private func loadProjects() {
         projectScanner.scanProjects(in: "~/Projects") { [weak self] projects in
-            self?.projects = projects
-            self?.tableView.reloadData()
-            self?.headerView.updateStats(projectCount: projects.count, buildStats: (ready: 0, building: 0, error: 0))
+            guard let self = self else { return }
+            self.projects = projects
+            self.tableView.reloadData()
+            let buildStats = self.calculateBuildStats()
+            self.headerView.updateStats(projectCount: projects.count, buildStats: buildStats)
         }
     }
     
@@ -192,12 +194,81 @@ class DashboardViewController: NSViewController {
         guard row >= 0, row < projects.count else { return }
         
         let project = projects[row]
-        // Open in Finder for now
-        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: project.path)
+        
+        // Call the callback to show project detail
+        if let onProjectSelected = onProjectSelected {
+            onProjectSelected(project)
+        } else {
+            // Fallback: open in Finder
+            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: project.path)
+        }
     }
     
     @objc func refreshProjects() {
         loadProjects()
+    }
+    
+    // MARK: - OpenClaw Integration
+    
+    private func setupOpenClawConnection() {
+        openClawService.onConnectionStateChanged = { [weak self] state in
+            guard let self = self else { return }
+            // Update status bar via notification or direct reference
+            NotificationCenter.default.post(
+                name: NSNotification.Name("OpenClawConnectionChanged"),
+                object: nil,
+                userInfo: ["connected": self.openClawService.isConnected]
+            )
+        }
+        
+        openClawService.onAgentMessage = { message in
+            // Handle incoming agent messages
+            NotificationCenter.default.post(
+                name: NSNotification.Name("AgentMessageReceived"),
+                object: nil,
+                userInfo: ["message": message]
+            )
+        }
+        
+        // Connect to gateway
+        openClawService.connect()
+    }
+    
+    private func startAgentStatsPolling() {
+        // Poll for agent stats every 5 seconds
+        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+            self?.updateAgentStats()
+        }
+        // Initial update
+        updateAgentStats()
+    }
+    
+    private func updateAgentStats() {
+        openClawService.getUsageStats { [weak self] stats in
+            self?.headerView.updateAgentStats(
+                agents: stats.activeSessions,
+                subs: stats.subagents,
+                idle: stats.idleSessions
+            )
+            self?.headerView.updateTokenUsage(used: stats.totalTokens, total: stats.tokenLimit)
+        }
+    }
+    
+    // MARK: - Build Stats
+    
+    private func calculateBuildStats() -> (ready: Int, building: Int, error: Int) {
+        var ready = 0, building = 0, error = 0
+        
+        for project in projects {
+            switch project.buildStatus {
+            case .ready: ready += 1
+            case .building, .queued: building += 1
+            case .error: error += 1
+            case .none: break
+            }
+        }
+        
+        return (ready, building, error)
     }
 }
 
@@ -226,31 +297,31 @@ extension DashboardViewController: NSTableViewDelegate {
         case .language:
             return createLanguageCell(for: project)
         case .name:
-            return createTextCell(text: project.name, color: .white, bold: true)
+            return createTextCell(text: project.name, color: Catppuccin.text, bold: true)
         case .agent:
-            return createTextCell(text: project.agent ?? "-", color: .systemTeal)
+            return createTextCell(text: project.agent ?? "-", color: Catppuccin.teal)
         case .branches:
-            return createTextCell(text: "\(project.gitState.branchCount)", color: .white)
+            return createTextCell(text: "\(project.gitState.branchCount)", color: Catppuccin.text)
         case .activeBranch:
-            return createTextCell(text: project.gitState.activeBranch, color: .systemPurple)
+            return createTextCell(text: project.gitState.activeBranch, color: Catppuccin.mauve)
         case .issues:
-            return createTextCell(text: project.issuesDisplay, color: .systemOrange)
+            return createTextCell(text: project.issuesDisplay, color: Catppuccin.peach)
         case .stacks:
-            return createTextCell(text: project.stacksDisplay, color: .systemBlue)
+            return createTextCell(text: project.stacksDisplay, color: Catppuccin.blue)
         case .untracked:
-            let color: NSColor = project.gitState.untracked > 0 ? .systemRed : .secondaryLabelColor
+            let color: NSColor = project.gitState.untracked > 0 ? Catppuccin.red : Catppuccin.overlay0
             return createTextCell(text: project.untrackedDisplay, color: color)
         case .staged:
-            let color: NSColor = project.gitState.staged > 0 ? .systemGreen : .secondaryLabelColor
+            let color: NSColor = project.gitState.staged > 0 ? Catppuccin.green : Catppuccin.overlay0
             return createTextCell(text: project.stagedDisplay, color: color)
         case .age:
-            return createTextCell(text: project.gitState.ageString, color: .secondaryLabelColor)
+            return createTextCell(text: project.gitState.ageString, color: Catppuccin.subtext0)
         case .lastMain:
-            return createTextCell(text: project.gitState.lastMainString, color: .secondaryLabelColor)
+            return createTextCell(text: project.gitState.lastMainString, color: Catppuccin.subtext0)
         case .lastBranch:
-            return createTextCell(text: project.gitState.lastBranchString, color: .secondaryLabelColor)
+            return createTextCell(text: project.gitState.lastBranchString, color: Catppuccin.subtext0)
         case .comments:
-            return createTextCell(text: project.commentsDisplay, color: .systemYellow)
+            return createTextCell(text: project.commentsDisplay, color: Catppuccin.yellow)
         case .build:
             return createBuildStatusCell(for: project)
         case .actions:
@@ -292,11 +363,11 @@ extension DashboardViewController: NSTableViewDelegate {
         cell.font = NSFont.systemFont(ofSize: 11, weight: .medium)
         
         switch project.buildStatus {
-        case .ready: cell.textColor = .systemGreen
-        case .building: cell.textColor = .systemYellow
-        case .queued: cell.textColor = .systemBlue
-        case .error: cell.textColor = .systemRed
-        case .none: cell.textColor = .secondaryLabelColor
+        case .ready: cell.textColor = Catppuccin.green
+        case .building: cell.textColor = Catppuccin.yellow
+        case .queued: cell.textColor = Catppuccin.blue
+        case .error: cell.textColor = Catppuccin.red
+        case .none: cell.textColor = Catppuccin.overlay0
         }
         
         return cell
@@ -363,7 +434,7 @@ class ProjectRowView: NSTableRowView {
         
         // Custom background for selected rows
         if isSelected {
-            NSColor.white.withAlphaComponent(0.15).setFill()
+            Catppuccin.surface1.withAlphaComponent(0.6).setFill()
             let selectionRect = bounds.insetBy(dx: 4, dy: 2)
             let path = NSBezierPath(roundedRect: selectionRect, xRadius: 6, yRadius: 6)
             path.fill()
@@ -380,11 +451,11 @@ class ProjectRowView: NSTableRowView {
 
 class GradientBackgroundView: NSView {
     override func draw(_ dirtyRect: NSRect) {
-        // Dark gradient background (similar to Discord/Slack dark themes)
+        // Catppuccin-inspired gradient background
         let gradient = NSGradient(colors: [
-            NSColor(red: 0.08, green: 0.08, blue: 0.12, alpha: 1.0),
-            NSColor(red: 0.12, green: 0.10, blue: 0.16, alpha: 1.0),
-            NSColor(red: 0.10, green: 0.08, blue: 0.14, alpha: 1.0)
+            Catppuccin.crust,
+            Catppuccin.base,
+            Catppuccin.mantle
         ])
         
         gradient?.draw(in: bounds, angle: 135)

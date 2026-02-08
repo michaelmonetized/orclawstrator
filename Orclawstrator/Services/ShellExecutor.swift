@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 
 /// Executes shell commands and returns output

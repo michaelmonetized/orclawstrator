@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 
 /// Service for OpenClaw Gateway integration
@@ -83,6 +84,8 @@ class OpenClawService {
     }
     
     // MARK: - Init
+    
+    private let database = DatabaseManager.shared
     
     private init() {
         let config = URLSessionConfiguration.default
@@ -253,6 +256,13 @@ class OpenClawService {
                         type: messageType,
                         content: content,
                         timestamp: Date()
+                    )
+                    
+                    // Persist to database
+                    self.database.saveMessage(
+                        sessionId: sessionId,
+                        type: messageType.rawValue,
+                        content: content
                     )
                     
                     DispatchQueue.main.async { [weak self] in

@@ -4,31 +4,31 @@
 
 ### 1.1 Project Setup
 - [x] Create Xcode project with AppKit template
-- [ ] Configure Swift Package Manager dependencies
+- [x] Configure Swift Package Manager dependencies
 - [x] Set up project structure (MVC or MVVM)
 - [x] Configure code signing and entitlements
-- [ ] Set up SQLite for local state
+- [x] Set up SQLite for local state
 
 ### 1.2 Core Data Models
 - [x] `Project` — path, name, language, timestamps
-- [ ] `Agent` — id, name, persona, status
-- [ ] `Session` — project assignment, token usage
+- [x] `Agent` — id, name, persona, status (via OpenClawService.SessionInfo)
+- [x] `Session` — project assignment, token usage
 - [x] `BuildStatus` — vercel deployment state
 - [x] `GitState` — branches, staged, untracked, stacks
-- [ ] `Message` — inbox items from agents
+- [x] `Message` — inbox items from agents (via OpenClawService.AgentMessage)
 
 ### 1.3 Shell Integration Layer
 - [x] Create `ShellExecutor` for running CLI commands
 - [x] Git integration (`git status`, `git log`, `git branch`)
-- [ ] GitHub CLI integration (`gh issue list`, `gh pr list`)
-- [ ] Graphite CLI integration (`gt log`, `gt stack`)
-- [ ] Vercel CLI integration (`vercel ls`, `vercel inspect`)
+- [x] GitHub CLI integration (`gh issue list`, `gh pr list`)
+- [x] Graphite CLI integration (`gt log`, `gt stack`)
+- [x] Vercel CLI integration (`vercel ls`, `vercel inspect`)
 
 ### 1.4 OpenClaw Gateway Integration
-- [ ] HTTP client for Gateway API
-- [ ] WebSocket for real-time agent output
-- [ ] Session management (list, spawn, send)
-- [ ] Token usage tracking
+- [x] HTTP client for Gateway API
+- [x] WebSocket for real-time agent output
+- [x] Session management (list, spawn, send)
+- [x] Token usage tracking
 
 ---
 
@@ -64,26 +64,26 @@
 ## Phase 3: Project Detail View
 
 ### 3.1 Split View Layout
-- [ ] NSSplitView horizontal split
-- [ ] Left: Markdown viewer/editor tabs
-- [ ] Right: Agent activity stream
+- [x] NSSplitView horizontal split
+- [x] Left: Markdown viewer/editor tabs
+- [x] Right: Agent activity stream
 
 ### 3.2 Markdown Panel
-- [ ] Tab bar for project files (README, PLAN, CHANGELOG, ROADMAP)
-- [ ] Live markdown rendering (like nvim markdown plugins)
+- [x] Tab bar for project files (README, PLAN, CHANGELOG, ROADMAP)
+- [x] Live markdown rendering (like nvim markdown plugins)
 - [ ] Edit mode toggle
 - [ ] Save to file on edit
 
 ### 3.3 Agent Activity Panel
-- [ ] Streaming text view for agent output
+- [x] Streaming text view for agent output
 - [ ] ANSI color support
-- [ ] Auto-scroll with manual override
+- [x] Auto-scroll with manual override
 - [ ] Copy/clear actions
 
 ### 3.4 Chat Integration
-- [ ] Chat history view
-- [ ] Message input field
-- [ ] Send to agent action
+- [x] Chat history view
+- [x] Message input field
+- [x] Send to agent action
 - [ ] Branch switcher dropdown
 
 ### 3.5 PR Stack Viewer
@@ -233,10 +233,10 @@ Orclawstrator/
 | Milestone | Target | Status |
 |-----------|--------|--------|
 | M1: Window + Table | Week 1 | ✅ |
-| M2: Git Integration | Week 2 | 🟡 In Progress |
-| M3: OpenClaw Integration | Week 3 | ⬜ |
-| M4: Project Detail View | Week 4 | ⬜ |
-| M5: Inbox + Polish | Week 5 | ⬜ |
+| M2: Git Integration | Week 2 | ✅ |
+| M3: OpenClaw Integration | Week 3 | ✅ |
+| M4: Project Detail View | Week 4 | ✅ |
+| M5: Inbox + Polish | Week 5 | 🟡 In Progress |
 | M6: Beta Release | Week 6 | ⬜ |
 
 ---

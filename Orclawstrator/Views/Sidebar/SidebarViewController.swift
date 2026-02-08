@@ -11,6 +11,9 @@ class SidebarViewController: NSViewController {
     private var recentChatsOutlineView: NSOutlineView!
     private var statusView: StatusBarView!
     
+    // MARK: - Services
+    private let openClawService = OpenClawService.shared
+    
     // MARK: - Data
     private var recentChats: [RecentChat] = [
         RecentChat(title: "orclawstrator", subtitle: "Building the dashboard..."),
@@ -26,17 +29,66 @@ class SidebarViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupConnectionObserver()
+        loadRecentSessions()
+    }
+    
+    private func setupConnectionObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleConnectionChange(_:)),
+            name: NSNotification.Name("OpenClawConnectionChanged"),
+            object: nil
+        )
+        
+        // Update initial status
+        statusView.setConnected(openClawService.isConnected)
+        statusView.setStatus(openClawService.isConnected ? "Connected | Idle | agent main" : "Disconnected")
+    }
+    
+    @objc private func handleConnectionChange(_ notification: Notification) {
+        guard let connected = notification.userInfo?["connected"] as? Bool else { return }
+        statusView.setConnected(connected)
+        statusView.setStatus(connected ? "Connected | Idle | agent main" : "Disconnected")
+    }
+    
+    private func loadRecentSessions() {
+        // Get sessions from OpenClaw
+        openClawService.getSessions { [weak self] sessions in
+            guard let self = self else { return }
+            
+            // Convert to recent chats
+            self.recentChats = sessions.prefix(10).map { session in
+                RecentChat(
+                    title: session.label ?? session.id,
+                    subtitle: session.status + (session.tokensUsed.map { " • \($0) tokens" } ?? "")
+                )
+            }
+            
+            // Add placeholder if empty
+            if self.recentChats.isEmpty {
+                self.recentChats = [
+                    RecentChat(title: "No active sessions", subtitle: "Start chatting to begin")
+                ]
+            }
+            
+            self.recentChatsOutlineView.reloadData()
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Setup
     private func setupUI() {
         view.wantsLayer = true
-        view.layer?.backgroundColor = NSColor(red: 0.06, green: 0.06, blue: 0.09, alpha: 1.0).cgColor
+        view.layer?.backgroundColor = Catppuccin.crust.cgColor
         
         // Logo/Title
         logoLabel = NSTextField(labelWithString: "🦞 Orclawstrator")
         logoLabel.font = NSFont.systemFont(ofSize: 16, weight: .bold)
-        logoLabel.textColor = .white
+        logoLabel.textColor = Catppuccin.text
         logoLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(logoLabel)
         
@@ -49,13 +101,13 @@ class SidebarViewController: NSViewController {
         newProjectButton = NSButton(title: "+ New Project", target: self, action: #selector(newProjectClicked))
         newProjectButton.bezelStyle = .rounded
         newProjectButton.translatesAutoresizingMaskIntoConstraints = false
-        newProjectButton.contentTintColor = .systemTeal
+        newProjectButton.contentTintColor = Catppuccin.teal
         view.addSubview(newProjectButton)
         
         // Recent Chats section
         let recentLabel = NSTextField(labelWithString: "RECENT CHATS")
         recentLabel.font = NSFont.systemFont(ofSize: 10, weight: .semibold)
-        recentLabel.textColor = NSColor.white.withAlphaComponent(0.5)
+        recentLabel.textColor = Catppuccin.overlay0
         recentLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(recentLabel)
         
@@ -106,7 +158,7 @@ class SidebarViewController: NSViewController {
     private func createChatInputArea() -> NSView {
         let container = NSView()
         container.wantsLayer = true
-        container.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.05).cgColor
+        container.layer?.backgroundColor = Catppuccin.surface0.cgColor
         container.layer?.cornerRadius = 8
         
         // Text field
@@ -114,7 +166,7 @@ class SidebarViewController: NSViewController {
         chatInputField.placeholderString = "Message OpenClaw..."
         chatInputField.isBezeled = false
         chatInputField.drawsBackground = false
-        chatInputField.textColor = .white
+        chatInputField.textColor = Catppuccin.text
         chatInputField.focusRingType = .none
         chatInputField.font = NSFont.systemFont(ofSize: 13)
         chatInputField.translatesAutoresizingMaskIntoConstraints = false
@@ -126,7 +178,7 @@ class SidebarViewController: NSViewController {
         sendButton.bezelStyle = .inline
         sendButton.isBordered = false
         sendButton.font = NSFont.systemFont(ofSize: 16, weight: .medium)
-        sendButton.contentTintColor = .systemTeal
+        sendButton.contentTintColor = Catppuccin.teal
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(sendButton)
         
@@ -172,8 +224,19 @@ class SidebarViewController: NSViewController {
         let message = chatInputField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !message.isEmpty else { return }
         
-        print("Sending message: \(message)")
-        // TODO: Send to OpenClaw Gateway
+        // Send to OpenClaw Gateway
+        openClawService.sendMessage(message, to: "main") { [weak self] success in
+            if success {
+                // Reload sessions to show updated activity
+                self?.loadRecentSessions()
+            } else {
+                // Show error
+                self?.statusView.setStatus("Failed to send message")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self?.statusView.setStatus(self?.openClawService.isConnected == true ? "Connected | Idle" : "Disconnected")
+                }
+            }
+        }
         
         chatInputField.stringValue = ""
     }
@@ -222,13 +285,13 @@ extension SidebarViewController: NSOutlineViewDelegate {
         
         let titleLabel = NSTextField(labelWithString: chat.title)
         titleLabel.font = NSFont.systemFont(ofSize: 13, weight: .medium)
-        titleLabel.textColor = .white
+        titleLabel.textColor = Catppuccin.text
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         cell.addSubview(titleLabel)
         
         let subtitleLabel = NSTextField(labelWithString: chat.subtitle)
         subtitleLabel.font = NSFont.systemFont(ofSize: 11)
-        subtitleLabel.textColor = NSColor.white.withAlphaComponent(0.5)
+        subtitleLabel.textColor = Catppuccin.subtext0
         subtitleLabel.lineBreakMode = .byTruncatingTail
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         cell.addSubview(subtitleLabel)
@@ -274,12 +337,12 @@ class StatusBarView: NSView {
     
     private func setupUI() {
         wantsLayer = true
-        layer?.backgroundColor = NSColor.black.withAlphaComponent(0.4).cgColor
+        layer?.backgroundColor = Catppuccin.mantle.cgColor
         
         // Status indicator dot
         statusDot = NSView()
         statusDot.wantsLayer = true
-        statusDot.layer?.backgroundColor = NSColor.systemGreen.cgColor
+        statusDot.layer?.backgroundColor = Catppuccin.green.cgColor
         statusDot.layer?.cornerRadius = 4
         statusDot.translatesAutoresizingMaskIntoConstraints = false
         addSubview(statusDot)
@@ -287,14 +350,14 @@ class StatusBarView: NSView {
         // Status text
         statusLabel = NSTextField(labelWithString: "Connected | Idle | agent main")
         statusLabel.font = NSFont.systemFont(ofSize: 10)
-        statusLabel.textColor = NSColor.white.withAlphaComponent(0.7)
+        statusLabel.textColor = Catppuccin.subtext0
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(statusLabel)
         
         // Model label
         modelLabel = NSTextField(labelWithString: "claude-opus-4-5")
         modelLabel.font = NSFont.monospacedSystemFont(ofSize: 9, weight: .regular)
-        modelLabel.textColor = NSColor.white.withAlphaComponent(0.5)
+        modelLabel.textColor = Catppuccin.overlay1
         modelLabel.alignment = .right
         modelLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(modelLabel)
@@ -314,7 +377,7 @@ class StatusBarView: NSView {
     }
     
     func setConnected(_ connected: Bool) {
-        statusDot.layer?.backgroundColor = connected ? NSColor.systemGreen.cgColor : NSColor.systemRed.cgColor
+        statusDot.layer?.backgroundColor = connected ? Catppuccin.green.cgColor : Catppuccin.red.cgColor
     }
     
     func setStatus(_ status: String) {
