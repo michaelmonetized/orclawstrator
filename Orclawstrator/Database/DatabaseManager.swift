@@ -2,6 +2,7 @@ import Foundation
 import SQLite3
 
 /// SQLite database manager for local state persistence
+/// Stores database in ~/.orclawstrator/cache.db (survives builds)
 class DatabaseManager {
     
     static let shared = DatabaseManager()
@@ -12,14 +13,15 @@ class DatabaseManager {
     // MARK: - Initialization
     
     private init() {
-        // Store database in Application Support
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let appFolder = appSupport.appendingPathComponent("Orclawstrator")
+        // Store database in ~/.orclawstrator/ (not wiped on build)
+        let homeDir = FileManager.default.homeDirectoryForCurrentUser
+        let appFolder = homeDir.appendingPathComponent(".orclawstrator")
         
         // Create folder if needed
         try? FileManager.default.createDirectory(at: appFolder, withIntermediateDirectories: true)
         
-        dbPath = appFolder.appendingPathComponent("orclawstrator.sqlite").path
+        dbPath = appFolder.appendingPathComponent("cache.db").path
+        print("[DB] Using database at: \(dbPath)")
         openDatabase()
         createTables()
     }
@@ -32,7 +34,9 @@ class DatabaseManager {
     
     private func openDatabase() {
         if sqlite3_open(dbPath, &db) != SQLITE_OK {
-            print("Error opening database: \(String(cString: sqlite3_errmsg(db)))")
+            print("[DB] Error opening database: \(String(cString: sqlite3_errmsg(db)))")
+        } else {
+            print("[DB] Database opened successfully")
         }
     }
     
@@ -85,6 +89,16 @@ class DatabaseManager {
                 key TEXT PRIMARY KEY,
                 value TEXT
             )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS recent_chats (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                subtitle TEXT,
+                project_path TEXT,
+                created_at INTEGER,
+                updated_at INTEGER
+            )
             """
         ]
         
@@ -92,7 +106,7 @@ class DatabaseManager {
             var statement: OpaquePointer?
             if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
                 if sqlite3_step(statement) != SQLITE_DONE {
-                    print("Error creating table: \(String(cString: sqlite3_errmsg(db)))")
+                    print("[DB] Error creating table: \(String(cString: sqlite3_errmsg(db)))")
                 }
             }
             sqlite3_finalize(statement)
@@ -116,10 +130,31 @@ class DatabaseManager {
             sqlite3_bind_int64(statement, 5, Int64(Date().timeIntervalSince1970))
             
             if sqlite3_step(statement) != SQLITE_DONE {
-                print("Error saving project: \(String(cString: sqlite3_errmsg(db)))")
+                print("[DB] Error saving project: \(String(cString: sqlite3_errmsg(db)))")
             }
         }
         sqlite3_finalize(statement)
+    }
+    
+    func getAllProjects() -> [(id: String, name: String, path: String, language: String?)] {
+        let sql = "SELECT id, name, path, language FROM projects ORDER BY last_scanned DESC"
+        var results: [(String, String, String, String?)] = []
+        
+        var statement: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
+            while sqlite3_step(statement) == SQLITE_ROW {
+                let id = String(cString: sqlite3_column_text(statement, 0))
+                let name = String(cString: sqlite3_column_text(statement, 1))
+                let path = String(cString: sqlite3_column_text(statement, 2))
+                var language: String?
+                if let langPtr = sqlite3_column_text(statement, 3) {
+                    language = String(cString: langPtr)
+                }
+                results.append((id, name, path, language))
+            }
+        }
+        sqlite3_finalize(statement)
+        return results
     }
     
     func getProject(byPath path: String) -> (id: String, isFavorite: Bool, notes: String?)? {
@@ -204,7 +239,7 @@ class DatabaseManager {
             sqlite3_bind_int64(statement, 7, Int64(Date().timeIntervalSince1970))
             
             if sqlite3_step(statement) != SQLITE_DONE {
-                print("Error saving session: \(String(cString: sqlite3_errmsg(db)))")
+                print("[DB] Error saving session: \(String(cString: sqlite3_errmsg(db)))")
             }
         }
         sqlite3_finalize(statement)
@@ -226,7 +261,7 @@ class DatabaseManager {
             sqlite3_bind_int64(statement, 4, Int64(Date().timeIntervalSince1970))
             
             if sqlite3_step(statement) != SQLITE_DONE {
-                print("Error saving message: \(String(cString: sqlite3_errmsg(db)))")
+                print("[DB] Error saving message: \(String(cString: sqlite3_errmsg(db)))")
             }
         }
         sqlite3_finalize(statement)
@@ -255,6 +290,55 @@ class DatabaseManager {
             sqlite3_step(statement)
         }
         sqlite3_finalize(statement)
+    }
+    
+    // MARK: - Recent Chats
+    
+    func saveRecentChat(title: String, subtitle: String?, projectPath: String?) {
+        let sql = """
+            INSERT INTO recent_chats (title, subtitle, project_path, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?)
+        """
+        
+        let now = Int64(Date().timeIntervalSince1970)
+        var statement: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
+            sqlite3_bind_text(statement, 1, title, -1, nil)
+            if let sub = subtitle {
+                sqlite3_bind_text(statement, 2, sub, -1, nil)
+            } else {
+                sqlite3_bind_null(statement, 2)
+            }
+            if let path = projectPath {
+                sqlite3_bind_text(statement, 3, path, -1, nil)
+            } else {
+                sqlite3_bind_null(statement, 3)
+            }
+            sqlite3_bind_int64(statement, 4, now)
+            sqlite3_bind_int64(statement, 5, now)
+            sqlite3_step(statement)
+        }
+        sqlite3_finalize(statement)
+    }
+    
+    func getRecentChats(limit: Int = 10) -> [(title: String, subtitle: String?)] {
+        let sql = "SELECT title, subtitle FROM recent_chats ORDER BY updated_at DESC LIMIT ?"
+        var results: [(String, String?)] = []
+        
+        var statement: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
+            sqlite3_bind_int(statement, 1, Int32(limit))
+            while sqlite3_step(statement) == SQLITE_ROW {
+                let title = String(cString: sqlite3_column_text(statement, 0))
+                var subtitle: String?
+                if let subPtr = sqlite3_column_text(statement, 1) {
+                    subtitle = String(cString: subPtr)
+                }
+                results.append((title, subtitle))
+            }
+        }
+        sqlite3_finalize(statement)
+        return results
     }
     
     // MARK: - Settings

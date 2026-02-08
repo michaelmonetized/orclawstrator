@@ -68,11 +68,15 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift"
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/BottomStatusBar.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift"
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopStatusBar.swift"
         },
         {
           "kind" : "file",
@@ -80,7 +84,7 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift"
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/MainContentView.swift"
         },
         {
           "kind" : "file",
@@ -114,10 +118,11 @@
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectScanner.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ShellExecutor.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.swift.o",
-        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o",
-        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/BottomStatusBar.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardView.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopStatusBar.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.swift.o",
-        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o",
+        "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainContentView.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.swift.o",
         "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/main.swift.o"
       ],
@@ -224,11 +229,15 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o"
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/BottomStatusBar.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swift.o"
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopStatusBar.swift.o"
         },
         {
           "kind" : "file",
@@ -236,7 +245,7 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o"
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainContentView.swift.o"
         },
         {
           "kind" : "file",
@@ -264,10 +273,11 @@
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ProjectScanner.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ShellExecutor.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift",
-        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift",
-        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/BottomStatusBar.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardView.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopStatusBar.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift",
-        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift",
+        "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/MainContentView.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift",
         "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift"
       ],
@@ -297,10 +307,11 @@
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ProjectScanner.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/ShellExecutor.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift",
-      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift",
-      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/BottomStatusBar.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardView.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopStatusBar.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift",
-      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift",
+      "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/MainContentView.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift",
       "/Users/michael/Projects/orclawstrator/Orclawstrator/main.swift",
       "-I",
@@ -446,11 +457,15 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift"
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/BottomStatusBar.swift"
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift"
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopStatusBar.swift"
         },
         {
           "kind" : "file",
@@ -458,7 +473,7 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift"
+          "name" : "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/MainContentView.swift"
         },
         {
           "kind" : "file",
@@ -484,11 +499,15 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/BottomStatusBar.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.swift.o"
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o"
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardView.swift.o"
         },
         {
           "kind" : "file",
@@ -505,6 +524,10 @@
         {
           "kind" : "file",
           "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/GraphiteService.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainContentView.swift.o"
         },
         {
           "kind" : "file",
@@ -532,11 +555,7 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o"
-        },
-        {
-          "kind" : "file",
-          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swift.o"
+          "name" : "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopStatusBar.swift.o"
         },
         {
           "kind" : "file",

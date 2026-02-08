@@ -44,7 +44,7 @@ class ProjectDetailViewController: NSViewController {
     
     private func setupUI() {
         view.wantsLayer = true
-        view.layer?.backgroundColor = Catppuccin.base.cgColor
+        view.layer?.backgroundColor = NSColor.clear.cgColor
         
         // Header with back button and project info
         headerView = ProjectHeaderView()
@@ -81,7 +81,9 @@ class ProjectDetailViewController: NSViewController {
         ])
         
         // Set initial split position
-        splitView.setPosition(view.bounds.width * 0.5, ofDividerAt: 0)
+        DispatchQueue.main.async { [weak self] in
+            self?.splitView.setPosition((self?.view.bounds.width ?? 1000) * 0.5, ofDividerAt: 0)
+        }
     }
     
     private func setupNotifications() {
@@ -249,7 +251,11 @@ class MarkdownPanelView: NSView {
     private var tabBar: NSSegmentedControl!
     private var scrollView: NSScrollView!
     private var textView: NSTextView!
+    private var saveButton: NSButton!
+    private var statusLabel: NSTextField!
     private var currentProject: Project?
+    private var currentFilePath: String?
+    private var isEditing: Bool = false
     
     private let tabFiles = ["README.md", "PLAN.md", "ROADMAP.md", "CHANGELOG.md"]
     
@@ -265,7 +271,7 @@ class MarkdownPanelView: NSView {
     
     private func setupUI() {
         wantsLayer = true
-        layer?.backgroundColor = Catppuccin.mantle.cgColor
+        layer?.backgroundColor = Catppuccin.mantle.withAlphaComponent(0.7).cgColor
         layer?.cornerRadius = 8
         
         // Tab bar
@@ -273,6 +279,21 @@ class MarkdownPanelView: NSView {
         tabBar.selectedSegment = 0
         tabBar.translatesAutoresizingMaskIntoConstraints = false
         addSubview(tabBar)
+        
+        // Save button
+        saveButton = NSButton(title: "Save", target: self, action: #selector(saveFile))
+        saveButton.bezelStyle = .rounded
+        saveButton.contentTintColor = Catppuccin.green
+        saveButton.isHidden = true
+        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(saveButton)
+        
+        // Status label
+        statusLabel = NSTextField(labelWithString: "")
+        statusLabel.font = NSFont.systemFont(ofSize: 10)
+        statusLabel.textColor = Catppuccin.subtext0
+        statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(statusLabel)
         
         // Scroll view with text view for markdown
         scrollView = NSScrollView()
@@ -283,21 +304,31 @@ class MarkdownPanelView: NSView {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(scrollView)
         
+        // Editable text view
         textView = NSTextView()
-        textView.isEditable = false
+        textView.isEditable = true
         textView.isSelectable = true
-        textView.backgroundColor = .clear
+        textView.isRichText = false
+        textView.allowsUndo = true
+        textView.backgroundColor = Catppuccin.base.withAlphaComponent(0.5)
         textView.textColor = Catppuccin.text
+        textView.insertionPointColor = Catppuccin.text
         textView.font = NSFont.monospacedSystemFont(ofSize: 13, weight: .regular)
         textView.textContainerInset = NSSize(width: 16, height: 16)
-        textView.autoresizingMask = [.width]
+        textView.autoresizingMask = [.width, .height]
+        textView.delegate = self
         
         scrollView.documentView = textView
         
         NSLayoutConstraint.activate([
             tabBar.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             tabBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            tabBar.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            
+            saveButton.centerYAnchor.constraint(equalTo: tabBar.centerYAnchor),
+            saveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            
+            statusLabel.centerYAnchor.constraint(equalTo: tabBar.centerYAnchor),
+            statusLabel.trailingAnchor.constraint(equalTo: saveButton.leadingAnchor, constant: -8),
             
             scrollView.topAnchor.constraint(equalTo: tabBar.bottomAnchor, constant: 8),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -312,26 +343,170 @@ class MarkdownPanelView: NSView {
     }
     
     @objc private func tabChanged() {
+        if isEditing {
+            saveFile()
+        }
         loadCurrentTab()
     }
     
     private func loadCurrentTab() {
-        guard let project = currentProject else { return }
+        guard let project = currentProject else {
+            textView.string = "No project selected"
+            return
+        }
         
         let filename = tabFiles[tabBar.selectedSegment]
-        let filePath = (project.path as NSString).appendingPathComponent(filename)
         
-        if FileManager.default.fileExists(atPath: filePath),
-           let content = try? String(contentsOfFile: filePath, encoding: .utf8) {
-            displayMarkdown(content)
+        // Properly expand the path
+        let projectPath = (project.path as NSString).expandingTildeInPath
+        let filePath = (projectPath as NSString).appendingPathComponent(filename)
+        
+        currentFilePath = filePath
+        isEditing = false
+        saveButton.isHidden = true
+        
+        print("[Markdown] Loading: \(filePath)")
+        
+        let fileManager = FileManager.default
+        
+        if fileManager.fileExists(atPath: filePath) {
+            do {
+                let content = try String(contentsOfFile: filePath, encoding: .utf8)
+                print("[Markdown] Loaded \(content.count) characters from \(filename)")
+                displayMarkdown(content)
+                statusLabel.stringValue = "Loaded ✓"
+                statusLabel.textColor = Catppuccin.green
+            } catch {
+                print("[Markdown] Error reading \(filename): \(error)")
+                textView.string = "Error reading \(filename):\n\(error.localizedDescription)"
+                textView.textColor = Catppuccin.red
+                statusLabel.stringValue = "Error"
+                statusLabel.textColor = Catppuccin.red
+            }
         } else {
-            textView.string = "No \(filename) found in this project."
+            print("[Markdown] File not found: \(filePath)")
+            // File doesn't exist - show template
+            let template = createTemplate(for: filename, projectName: project.name)
+            textView.string = template
             textView.textColor = Catppuccin.subtext0
+            statusLabel.stringValue = "New file"
+            statusLabel.textColor = Catppuccin.yellow
+        }
+        
+        // Clear status after delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.statusLabel.stringValue = ""
+        }
+    }
+    
+    private func createTemplate(for filename: String, projectName: String) -> String {
+        let title = filename.replacingOccurrences(of: ".md", with: "")
+        switch filename {
+        case "README.md":
+            return """
+            # \(projectName)
+            
+            ## Description
+            
+            TODO: Describe what this project does.
+            
+            ## Installation
+            
+            TODO: Add installation instructions.
+            
+            ## Usage
+            
+            TODO: Add usage examples.
+            
+            ## License
+            
+            MIT
+            """
+        case "PLAN.md":
+            return """
+            # \(projectName) - Development Plan
+            
+            ## Goals
+            
+            - [ ] Goal 1
+            - [ ] Goal 2
+            
+            ## Current Sprint
+            
+            ### In Progress
+            
+            - [ ] Task 1
+            
+            ### Done
+            
+            - [x] Initial setup
+            """
+        case "ROADMAP.md":
+            return """
+            # \(projectName) - Roadmap
+            
+            ## v1.0 (Current)
+            
+            - [ ] Core features
+            - [ ] Basic UI
+            
+            ## v1.1 (Next)
+            
+            - [ ] Additional features
+            - [ ] Improvements
+            
+            ## Future
+            
+            - [ ] Long-term goals
+            """
+        case "CHANGELOG.md":
+            return """
+            # Changelog
+            
+            All notable changes to \(projectName) will be documented in this file.
+            
+            ## [Unreleased]
+            
+            ### Added
+            - Initial project setup
+            
+            ### Changed
+            
+            ### Fixed
+            """
+        default:
+            return "# \(title)\n\nStart writing here..."
+        }
+    }
+    
+    @objc private func saveFile() {
+        guard let filePath = currentFilePath else { return }
+        
+        let content = textView.string
+        do {
+            // Create directory if needed
+            let directory = (filePath as NSString).deletingLastPathComponent
+            try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
+            
+            try content.write(toFile: filePath, atomically: true, encoding: .utf8)
+            isEditing = false
+            saveButton.isHidden = true
+            statusLabel.stringValue = "Saved ✓"
+            statusLabel.textColor = Catppuccin.green
+            
+            print("[Markdown] Saved to: \(filePath)")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                self?.statusLabel.stringValue = ""
+            }
+        } catch {
+            statusLabel.stringValue = "Save failed"
+            statusLabel.textColor = Catppuccin.red
+            print("[Markdown] Save error: \(error)")
         }
     }
     
     private func displayMarkdown(_ markdown: String) {
-        // Simple markdown rendering - convert to attributed string
         let attributed = renderMarkdown(markdown)
         textView.textStorage?.setAttributedString(attributed)
     }
@@ -345,7 +520,6 @@ class MarkdownPanelView: NSView {
         let h2Font = NSFont.systemFont(ofSize: 20, weight: .bold)
         let h3Font = NSFont.systemFont(ofSize: 16, weight: .semibold)
         let codeFont = NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
-        let boldFont = NSFont.systemFont(ofSize: 13, weight: .bold)
         
         var inCodeBlock = false
         
@@ -388,20 +562,31 @@ class MarkdownPanelView: NSView {
                 text = "    ◦ " + String(lineStr.dropFirst(4))
             }
             // Checkboxes
-            else if lineStr.contains("- [x]") || lineStr.contains("- [ ]") {
+            else if lineStr.contains("- [x]") {
                 text = lineStr.replacingOccurrences(of: "- [x]", with: "  ✅")
-                              .replacingOccurrences(of: "- [ ]", with: "  ☐")
-            }
-            // Inline code
-            else if lineStr.contains("`") {
-                // Simple inline code highlighting
-                attrs[.foregroundColor] = Catppuccin.text
+                attrs[.foregroundColor] = Catppuccin.green
+            } else if lineStr.contains("- [ ]") {
+                text = lineStr.replacingOccurrences(of: "- [ ]", with: "  ☐")
+                attrs[.foregroundColor] = Catppuccin.subtext0
             }
             
             result.append(NSAttributedString(string: text + "\n", attributes: attrs))
         }
         
         return result
+    }
+}
+
+// MARK: - MarkdownPanelView NSTextViewDelegate
+
+extension MarkdownPanelView: NSTextViewDelegate {
+    func textDidChange(_ notification: Notification) {
+        if !isEditing {
+            isEditing = true
+            saveButton.isHidden = false
+            statusLabel.stringValue = "Modified"
+            statusLabel.textColor = Catppuccin.yellow
+        }
     }
 }
 
@@ -430,7 +615,7 @@ class AgentActivityView: NSView {
     
     private func setupUI() {
         wantsLayer = true
-        layer?.backgroundColor = Catppuccin.crust.cgColor
+        layer?.backgroundColor = Catppuccin.crust.withAlphaComponent(0.7).cgColor
         layer?.cornerRadius = 8
         
         // Header
@@ -464,7 +649,7 @@ class AgentActivityView: NSView {
         // Input area
         let inputContainer = NSView()
         inputContainer.wantsLayer = true
-        inputContainer.layer?.backgroundColor = Catppuccin.surface0.cgColor
+        inputContainer.layer?.backgroundColor = Catppuccin.surface0.withAlphaComponent(0.6).cgColor
         inputContainer.layer?.cornerRadius = 6
         inputContainer.translatesAutoresizingMaskIntoConstraints = false
         addSubview(inputContainer)
@@ -517,7 +702,6 @@ class AgentActivityView: NSView {
     
     func setProjectPath(_ path: String) {
         self.projectPath = path
-        // Clear previous content
         textView.string = ""
         appendSystemMessage("Connected to project: \(path)")
     }
@@ -547,18 +731,15 @@ class AgentActivityView: NSView {
         
         let line = NSMutableAttributedString()
         
-        // Timestamp
         line.append(NSAttributedString(string: "[\(timestamp)] ", attributes: [
             .foregroundColor: Catppuccin.overlay0,
             .font: NSFont.monospacedSystemFont(ofSize: 10, weight: .regular)
         ]))
         
-        // Prefix
         line.append(NSAttributedString(string: "\(prefix) ", attributes: [
             .font: NSFont.systemFont(ofSize: 12)
         ]))
         
-        // Content
         line.append(NSAttributedString(string: message.content + "\n", attributes: [
             .foregroundColor: color,
             .font: NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
@@ -599,10 +780,8 @@ class AgentActivityView: NSView {
         let message = inputField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !message.isEmpty else { return }
         
-        // Show sent message
         appendSystemMessage("You: \(message)")
         
-        // Send to OpenClaw (using main session for now)
         openClawService.sendMessage(message, to: "main") { success in
             if !success {
                 self.appendSystemMessage("Failed to send message")

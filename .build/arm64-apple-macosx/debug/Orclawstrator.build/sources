@@ -9,9 +9,10 @@
 /Users/michael/Projects/orclawstrator/Orclawstrator/Services/ProjectScanner.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Services/ShellExecutor.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Services/VercelService.swift
-/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift
-/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/BottomStatusBar.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardView.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopStatusBar.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift
-/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift
+/Users/michael/Projects/orclawstrator/Orclawstrator/Views/MainContentView.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift
 /Users/michael/Projects/orclawstrator/Orclawstrator/main.swift

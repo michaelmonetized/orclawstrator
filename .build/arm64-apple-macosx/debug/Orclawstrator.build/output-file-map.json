@@ -79,19 +79,26 @@
     "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.swiftdeps",
     "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/VercelService.dia"
   },
-  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardViewController.swift": {
-    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.d",
-    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swift.o",
-    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController~partial.swiftmodule",
-    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.swiftdeps",
-    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardViewController.dia"
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/BottomStatusBar.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/BottomStatusBar.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/BottomStatusBar.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/BottomStatusBar~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/BottomStatusBar.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/BottomStatusBar.dia"
   },
-  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopBarView.swift": {
-    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.d",
-    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swift.o",
-    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView~partial.swiftmodule",
-    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.swiftdeps",
-    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopBarView.dia"
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/DashboardView.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardView.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardView.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardView~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardView.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/DashboardView.dia"
+  },
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Dashboard/TopStatusBar.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopStatusBar.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopStatusBar.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopStatusBar~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopStatusBar.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/TopStatusBar.dia"
   },
   "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Detail/ProjectDetailViewController.swift": {
     "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.d",
@@ -100,12 +107,12 @@
     "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.swiftdeps",
     "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/ProjectDetailViewController.dia"
   },
-  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Sidebar/SidebarViewController.swift": {
-    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.d",
-    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swift.o",
-    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController~partial.swiftmodule",
-    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.swiftdeps",
-    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/SidebarViewController.dia"
+  "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/MainContentView.swift": {
+    "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainContentView.d",
+    "object": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainContentView.swift.o",
+    "swiftmodule": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainContentView.swiftdeps",
+    "diagnostics": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/MainContentView.dia"
   },
   "/Users/michael/Projects/orclawstrator/Orclawstrator/Views/Theme/CatppuccinColors.swift": {
     "dependencies": "/Users/michael/Projects/orclawstrator/.build/arm64-apple-macosx/debug/Orclawstrator.build/CatppuccinColors.d",

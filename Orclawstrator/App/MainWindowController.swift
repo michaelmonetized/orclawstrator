@@ -2,19 +2,18 @@ import Cocoa
 
 class MainWindowController: NSWindowController {
     
-    private var splitViewController: NSSplitViewController!
-    private var sidebarViewController: SidebarViewController!
-    private var dashboardViewController: DashboardViewController!
-    private var detailViewController: ProjectDetailViewController?
+    private var mainContentView: MainContentView!
+    private var topStatusBar: TopStatusBar!
+    private var bottomStatusBar: BottomStatusBar!
     
     // Track current main content
-    private var mainContentItem: NSSplitViewItem?
+    private var currentDetailProject: Project?
     
     convenience init() {
-        // Create window
-        let window = MainWindow(
+        // Create completely chromeless, transparent window
+        let window = TransparentWindow(
             contentRect: NSRect(x: 100, y: 100, width: 1400, height: 900),
-            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            styleMask: [.borderless, .resizable, .miniaturizable, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
@@ -23,92 +22,88 @@ class MainWindowController: NSWindowController {
         
         // Setup window properties
         window.title = "🦞 Orclawstrator"
-        window.backgroundColor = Catppuccin.crust
         window.center()
-        window.minSize = NSSize(width: 900, height: 600)
+        window.minSize = NSSize(width: 1000, height: 700)
+        window.isMovableByWindowBackground = false
         
-        // Create split view with sidebar + dashboard
-        setupSplitView()
+        // Create window content
+        setupWindowContent()
     }
     
-    private func setupSplitView() {
-        // Create the view controllers
-        sidebarViewController = SidebarViewController()
-        dashboardViewController = DashboardViewController()
+    private func setupWindowContent() {
+        guard let window = window else { return }
         
-        // Set up project selection callback
-        dashboardViewController.onProjectSelected = { [weak self] project in
+        // Main container with rounded corners and gradient
+        let containerVC = NSViewController()
+        let container = GradientContainerView()
+        container.frame = NSRect(x: 0, y: 0, width: 1400, height: 900)
+        containerVC.view = container
+        
+        // Top status bar (full width, 44pt height)
+        topStatusBar = TopStatusBar()
+        topStatusBar.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(topStatusBar)
+        
+        // Draggable area covers the top bar
+        let dragView = WindowDragView()
+        dragView.translatesAutoresizingMaskIntoConstraints = false
+        topStatusBar.addSubview(dragView, positioned: .below, relativeTo: nil)
+        
+        // Main content area (sidebar + dashboard)
+        mainContentView = MainContentView()
+        mainContentView.translatesAutoresizingMaskIntoConstraints = false
+        mainContentView.onProjectSelected = { [weak self] project in
             self?.showProjectDetail(project)
         }
+        mainContentView.topStatusBar = topStatusBar
+        container.addSubview(mainContentView)
         
-        // Create split view controller
-        splitViewController = NSSplitViewController()
+        // Bottom status bar (full width, 28pt height)
+        bottomStatusBar = BottomStatusBar()
+        bottomStatusBar.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(bottomStatusBar)
         
-        // Sidebar item
-        let sidebarItem = NSSplitViewItem(sidebarWithViewController: sidebarViewController)
-        sidebarItem.minimumThickness = 220
-        sidebarItem.maximumThickness = 320
-        sidebarItem.canCollapse = true
-        sidebarItem.holdingPriority = .defaultLow
+        // Layout constraints
+        NSLayoutConstraint.activate([
+            // Top status bar
+            topStatusBar.topAnchor.constraint(equalTo: container.topAnchor),
+            topStatusBar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            topStatusBar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            topStatusBar.heightAnchor.constraint(equalToConstant: 44),
+            
+            // Drag view fills the top bar
+            dragView.topAnchor.constraint(equalTo: topStatusBar.topAnchor),
+            dragView.leadingAnchor.constraint(equalTo: topStatusBar.leadingAnchor),
+            dragView.trailingAnchor.constraint(equalTo: topStatusBar.trailingAnchor),
+            dragView.bottomAnchor.constraint(equalTo: topStatusBar.bottomAnchor),
+            
+            // Main content
+            mainContentView.topAnchor.constraint(equalTo: topStatusBar.bottomAnchor),
+            mainContentView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            mainContentView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            mainContentView.bottomAnchor.constraint(equalTo: bottomStatusBar.topAnchor),
+            
+            // Bottom status bar
+            bottomStatusBar.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            bottomStatusBar.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            bottomStatusBar.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            bottomStatusBar.heightAnchor.constraint(equalToConstant: 28)
+        ])
         
-        // Dashboard item (main content)
-        let dashboardItem = NSSplitViewItem(viewController: dashboardViewController)
-        dashboardItem.minimumThickness = 600
-        mainContentItem = dashboardItem
-        
-        // Add items to split view
-        splitViewController.addSplitViewItem(sidebarItem)
-        splitViewController.addSplitViewItem(dashboardItem)
-        
-        // Configure split view appearance
-        splitViewController.splitView.dividerStyle = .thin
-        splitViewController.splitView.isVertical = true
-        
-        // Set as window content
-        window?.contentViewController = splitViewController
+        window.contentViewController = containerVC
     }
     
     // MARK: - Navigation
     
     func showProjectDetail(_ project: Project) {
-        // Create detail view controller
-        let detailVC = ProjectDetailViewController()
-        detailVC.configure(with: project)
-        detailVC.onBack = { [weak self] in
-            self?.showDashboard()
-        }
-        
-        // Replace main content
-        if let mainItem = mainContentItem {
-            splitViewController.removeSplitViewItem(mainItem)
-        }
-        
-        let detailItem = NSSplitViewItem(viewController: detailVC)
-        detailItem.minimumThickness = 600
-        mainContentItem = detailItem
-        
-        splitViewController.addSplitViewItem(detailItem)
-        detailViewController = detailVC
-        
-        // Update window title
+        currentDetailProject = project
+        mainContentView.showProjectDetail(project)
         window?.title = "🦞 \(project.name)"
     }
     
     func showDashboard() {
-        // Remove detail view if present
-        if let mainItem = mainContentItem {
-            splitViewController.removeSplitViewItem(mainItem)
-        }
-        
-        // Add dashboard back
-        let dashboardItem = NSSplitViewItem(viewController: dashboardViewController)
-        dashboardItem.minimumThickness = 600
-        mainContentItem = dashboardItem
-        
-        splitViewController.addSplitViewItem(dashboardItem)
-        detailViewController = nil
-        
-        // Restore window title
+        currentDetailProject = nil
+        mainContentView.showDashboard()
         window?.title = "🦞 Orclawstrator"
     }
     
@@ -118,9 +113,9 @@ class MainWindowController: NSWindowController {
     }
 }
 
-// MARK: - Custom Main Window with Dark Theme
+// MARK: - Transparent Window (Chromeless, Semi-transparent)
 
-class MainWindow: NSWindow {
+class TransparentWindow: NSWindow {
     
     override init(
         contentRect: NSRect,
@@ -132,7 +127,100 @@ class MainWindow: NSWindow {
         
         // Apply dark appearance
         self.appearance = NSAppearance(named: .darkAqua)
+        
+        // Make window transparent and borderless
         self.titlebarAppearsTransparent = true
-        self.titleVisibility = .visible
+        self.titleVisibility = .hidden
+        self.isOpaque = false
+        self.backgroundColor = .clear
+        self.hasShadow = true
+        
+        // Window behavior
+        self.level = .normal
+        self.collectionBehavior = [.fullScreenPrimary, .managed]
+        
+        // Hide standard window buttons (traffic lights)
+        self.standardWindowButton(.closeButton)?.isHidden = true
+        self.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        self.standardWindowButton(.zoomButton)?.isHidden = true
+    }
+    
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { true }
+}
+
+// MARK: - Gradient Container View (Rounded corners + diagonal gradient)
+
+class GradientContainerView: NSView {
+    
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        setup()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+    
+    private func setup() {
+        wantsLayer = true
+        layer?.cornerRadius = 12
+        layer?.masksToBounds = true
+    }
+    
+    override func draw(_ dirtyRect: NSRect) {
+        // Diagonal gradient from top-left (base) to bottom-right (crust)
+        // with semi-transparency to show wallpaper
+        let gradient = NSGradient(colors: [
+            Catppuccin.base.withAlphaComponent(0.92),
+            Catppuccin.mantle.withAlphaComponent(0.90),
+            Catppuccin.crust.withAlphaComponent(0.95)
+        ], atLocations: [0.0, 0.5, 1.0], colorSpace: .deviceRGB)
+        
+        // Draw diagonal gradient (135 degrees = top-left to bottom-right)
+        gradient?.draw(in: bounds, angle: -45)
+        
+        // Add subtle noise texture overlay for depth
+        let overlayColor = NSColor.black.withAlphaComponent(0.05)
+        overlayColor.setFill()
+        bounds.fill()
+    }
+    
+    override func updateLayer() {
+        // Ensure corner radius is maintained
+        layer?.cornerRadius = 12
+    }
+}
+
+// MARK: - Window Drag View
+
+class WindowDragView: NSView {
+    
+    private var initialLocation: NSPoint?
+    
+    override func mouseDown(with event: NSEvent) {
+        initialLocation = event.locationInWindow
+    }
+    
+    override func mouseDragged(with event: NSEvent) {
+        guard let window = self.window, let initialLocation = initialLocation else { return }
+        
+        let currentLocation = event.locationInWindow
+        let newOrigin = NSPoint(
+            x: window.frame.origin.x + (currentLocation.x - initialLocation.x),
+            y: window.frame.origin.y + (currentLocation.y - initialLocation.y)
+        )
+        window.setFrameOrigin(newOrigin)
+    }
+    
+    override func mouseUp(with event: NSEvent) {
+        initialLocation = nil
+        
+        // Double-click to maximize/restore
+        if event.clickCount == 2 {
+            guard let window = self.window else { return }
+            window.zoom(nil)
+        }
     }
 }
