@@ -8,9 +8,13 @@ class OpenClawService {
     static let shared = OpenClawService()
     
     // MARK: - Configuration
-    
-    private let gatewayHost = "localhost"
-    private let gatewayPort = 3377
+
+    private var gatewayHost: String {
+        DatabaseManager.shared.getSetting(key: "gateway_host") ?? "localhost"
+    }
+    private var gatewayPort: Int {
+        Int(DatabaseManager.shared.getSetting(key: "gateway_port") ?? "3377") ?? 3377
+    }
     private var webSocket: URLSessionWebSocketTask?
     private var session: URLSession!
     

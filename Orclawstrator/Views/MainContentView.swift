@@ -5,11 +5,12 @@ import Cocoa
 class MainContentView: NSView {
     
     // MARK: - UI Components
-    
+
     private var sidebarView: EmbeddedSidebarView!
     private var contentContainer: NSView!
     private var dashboardView: DashboardView!
     private var detailViewController: ProjectDetailViewController?
+    private var inboxView: InboxView?
     
     // MARK: - External References
     
@@ -58,6 +59,16 @@ class MainContentView: NSView {
             self?.onProjectSelected?(project)
         }
         contentContainer.addSubview(dashboardView)
+
+        // Wire up inbox callback
+        sidebarView.onInboxSelected = { [weak self] in
+            self?.showInbox()
+        }
+
+        // Wire up new project callback
+        sidebarView.onNewProjectCreated = { [weak self] project in
+            self?.onProjectSelected?(project)
+        }
         
         NSLayoutConstraint.activate([
             // Sidebar on left
@@ -121,12 +132,45 @@ class MainContentView: NSView {
         // Remove detail view
         detailViewController?.view.removeFromSuperview()
         detailViewController = nil
-        
+
+        // Remove inbox view
+        inboxView?.removeFromSuperview()
+        inboxView = nil
+
         // Show dashboard
         dashboardView.isHidden = false
-        
+
         // Refresh dashboard
         dashboardView.refreshProjects()
+    }
+
+    func showInbox() {
+        // Hide dashboard
+        dashboardView.isHidden = true
+
+        // Remove detail view if any
+        detailViewController?.view.removeFromSuperview()
+        detailViewController = nil
+
+        // Remove old inbox view if any
+        inboxView?.removeFromSuperview()
+
+        // Create and add inbox view
+        let inbox = InboxView()
+        inbox.translatesAutoresizingMaskIntoConstraints = false
+        inbox.onBack = { [weak self] in
+            self?.showDashboard()
+        }
+        contentContainer.addSubview(inbox)
+
+        NSLayoutConstraint.activate([
+            inbox.topAnchor.constraint(equalTo: contentContainer.topAnchor),
+            inbox.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor),
+            inbox.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
+            inbox.bottomAnchor.constraint(equalTo: contentContainer.bottomAnchor)
+        ])
+
+        inboxView = inbox
     }
     
     // Forward top status bar reference
@@ -139,16 +183,23 @@ class MainContentView: NSView {
 // MARK: - Embedded Sidebar View
 
 class EmbeddedSidebarView: NSView {
-    
+
     // MARK: - UI Components
-    
+
     private var chatInputContainer: NSView!
     private var chatInputField: NSTextField!
     private var sendButton: NSButton!
+    private var inboxButton: NSButton!
     private var newProjectButton: NSButton!
     private var recentChatsLabel: NSTextField!
     private var recentChatsScrollView: NSScrollView!
     private var recentChatsTableView: NSTableView!
+    private var inboxBadge: NSTextField!
+
+    // MARK: - Callbacks
+
+    var onInboxSelected: (() -> Void)?
+    var onNewProjectCreated: ((Project) -> Void)?
     
     // MARK: - Services
     
@@ -208,12 +259,50 @@ class EmbeddedSidebarView: NSView {
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         chatInputContainer.addSubview(sendButton)
         
+        // Inbox button with badge
+        let inboxContainer = NSView()
+        inboxContainer.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(inboxContainer)
+
+        inboxButton = NSButton(title: "📥 Inbox", target: self, action: #selector(inboxClicked))
+        inboxButton.bezelStyle = .rounded
+        inboxButton.contentTintColor = Catppuccin.blue
+        inboxButton.translatesAutoresizingMaskIntoConstraints = false
+        inboxContainer.addSubview(inboxButton)
+
+        inboxBadge = NSTextField(labelWithString: "")
+        inboxBadge.font = NSFont.systemFont(ofSize: 10, weight: .bold)
+        inboxBadge.textColor = .white
+        inboxBadge.backgroundColor = Catppuccin.red
+        inboxBadge.wantsLayer = true
+        inboxBadge.layer?.backgroundColor = Catppuccin.red.cgColor
+        inboxBadge.layer?.cornerRadius = 8
+        inboxBadge.alignment = .center
+        inboxBadge.translatesAutoresizingMaskIntoConstraints = false
+        inboxBadge.isHidden = true
+        inboxContainer.addSubview(inboxBadge)
+
+        NSLayoutConstraint.activate([
+            inboxButton.leadingAnchor.constraint(equalTo: inboxContainer.leadingAnchor),
+            inboxButton.trailingAnchor.constraint(equalTo: inboxContainer.trailingAnchor),
+            inboxButton.topAnchor.constraint(equalTo: inboxContainer.topAnchor),
+            inboxButton.bottomAnchor.constraint(equalTo: inboxContainer.bottomAnchor),
+
+            inboxBadge.trailingAnchor.constraint(equalTo: inboxContainer.trailingAnchor, constant: 4),
+            inboxBadge.topAnchor.constraint(equalTo: inboxContainer.topAnchor, constant: -4),
+            inboxBadge.widthAnchor.constraint(greaterThanOrEqualToConstant: 16),
+            inboxBadge.heightAnchor.constraint(equalToConstant: 16)
+        ])
+
         // New Project button
         newProjectButton = NSButton(title: "+ New Project", target: self, action: #selector(newProjectClicked))
         newProjectButton.bezelStyle = .rounded
         newProjectButton.contentTintColor = Catppuccin.teal
         newProjectButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(newProjectButton)
+
+        // Update inbox badge
+        updateInboxBadge()
         
         // Recent Chats section header
         recentChatsLabel = NSTextField(labelWithString: "Recent Chats")
@@ -242,11 +331,16 @@ class EmbeddedSidebarView: NSView {
             sendButton.trailingAnchor.constraint(equalTo: chatInputContainer.trailingAnchor, constant: -8),
             sendButton.bottomAnchor.constraint(equalTo: chatInputContainer.bottomAnchor, constant: -8),
             
+            // Inbox button
+            inboxContainer.topAnchor.constraint(equalTo: chatInputContainer.bottomAnchor, constant: 12),
+            inboxContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            inboxContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+
             // New Project button
-            newProjectButton.topAnchor.constraint(equalTo: chatInputContainer.bottomAnchor, constant: 12),
+            newProjectButton.topAnchor.constraint(equalTo: inboxContainer.bottomAnchor, constant: 8),
             newProjectButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             newProjectButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
-            
+
             // Recent Chats label
             recentChatsLabel.topAnchor.constraint(equalTo: newProjectButton.bottomAnchor, constant: 20),
             recentChatsLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
@@ -284,23 +378,13 @@ class EmbeddedSidebarView: NSView {
     }
     
     private func loadRecentChats() {
-        // First try to get from database
-        let dbChats = database.getRecentChats(limit: 10)
-        if !dbChats.isEmpty {
-            recentChats = dbChats
-        } else {
-            // Fallback placeholder chats
-            recentChats = [
-                (title: "Build a swift app that...", subtitle: "▶️ ▶️"),
-                (title: "Look for opportunities in...", subtitle: "▶️ ▶️"),
-                (title: "Create a plan for hustle l...", subtitle: "▶️ ▶️")
-            ]
-        }
-        
+        // Get from database - no fake data
+        recentChats = database.getRecentChats(limit: 10)
+
         // Also try to get sessions from OpenClaw
         openClawService.getSessions { [weak self] sessions in
             guard let self = self else { return }
-            
+
             if !sessions.isEmpty {
                 self.recentChats = sessions.prefix(10).map { session in
                     let subtitle = session.status + (session.tokensUsed.map { " • \($0) tokens" } ?? "")
@@ -309,7 +393,7 @@ class EmbeddedSidebarView: NSView {
                 self.recentChatsTableView.reloadData()
             }
         }
-        
+
         recentChatsTableView.reloadData()
     }
     
@@ -331,8 +415,82 @@ class EmbeddedSidebarView: NSView {
     }
     
     @objc private func newProjectClicked() {
-        // TODO: Show new project dialog
-        print("New project clicked")
+        // Show dialog to get project name
+        let alert = NSAlert()
+        alert.messageText = "New Project"
+        alert.informativeText = "Enter a name for your new project:"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Create")
+        alert.addButton(withTitle: "Cancel")
+
+        let inputField = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 24))
+        inputField.placeholderString = "my-awesome-project"
+        alert.accessoryView = inputField
+
+        let response = alert.runModal()
+        guard response == .alertFirstButtonReturn else { return }
+
+        let projectName = inputField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !projectName.isEmpty else {
+            ErrorBanner.shared.showError("Project name cannot be empty")
+            return
+        }
+
+        // Create the project folder in ~/Projects
+        let projectsDir = NSString(string: "~/Projects").expandingTildeInPath
+        let projectPath = (projectsDir as NSString).appendingPathComponent(projectName)
+
+        let fileManager = FileManager.default
+
+        // Check if folder already exists
+        if fileManager.fileExists(atPath: projectPath) {
+            ErrorBanner.shared.showWarning("A project with that name already exists")
+            return
+        }
+
+        do {
+            // Create project directory
+            try fileManager.createDirectory(atPath: projectPath, withIntermediateDirectories: true)
+
+            // Initialize git repo
+            let shell = ShellExecutor.shared
+            _ = shell.run("git init", in: projectPath)
+
+            // Create initial README
+            let readme = "# \(projectName)\n\nDescribe your project here.\n"
+            try readme.write(toFile: (projectPath as NSString).appendingPathComponent("README.md"), atomically: true, encoding: .utf8)
+
+            // Create a Project object for the new project
+            let project = Project(name: projectName, path: projectPath)
+            project.language = .terminal
+            project.gitState = GitService.shared.getGitState(for: projectPath)
+
+            ErrorBanner.shared.showSuccess("Created project: \(projectName)")
+
+            // Navigate to the new project
+            onNewProjectCreated?(project)
+
+        } catch {
+            ErrorBanner.shared.showError("Failed to create project: \(error.localizedDescription)")
+        }
+    }
+
+    @objc private func inboxClicked() {
+        onInboxSelected?()
+    }
+
+    private func updateInboxBadge() {
+        let unreadCount = database.getUnreadMessageCount()
+        if unreadCount > 0 {
+            inboxBadge.stringValue = unreadCount > 99 ? "99+" : "\(unreadCount)"
+            inboxBadge.isHidden = false
+        } else {
+            inboxBadge.isHidden = true
+        }
+    }
+
+    func refreshBadge() {
+        updateInboxBadge()
     }
 }
 

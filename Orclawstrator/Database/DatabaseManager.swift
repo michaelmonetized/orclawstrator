@@ -120,15 +120,21 @@ class DatabaseManager {
             INSERT OR REPLACE INTO projects (id, name, path, language, last_scanned)
             VALUES (?, ?, ?, ?, ?)
         """
-        
+
+        // Convert strings to NSString to ensure they remain valid during binding
+        let idStr = project.id.uuidString as NSString
+        let nameStr = project.name as NSString
+        let pathStr = project.path as NSString
+        let langStr = project.language.rawValue as NSString
+
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
-            sqlite3_bind_text(statement, 1, project.id.uuidString, -1, nil)
-            sqlite3_bind_text(statement, 2, project.name, -1, nil)
-            sqlite3_bind_text(statement, 3, project.path, -1, nil)
-            sqlite3_bind_text(statement, 4, project.language.rawValue, -1, nil)
+            sqlite3_bind_text(statement, 1, idStr.utf8String, -1, nil)
+            sqlite3_bind_text(statement, 2, nameStr.utf8String, -1, nil)
+            sqlite3_bind_text(statement, 3, pathStr.utf8String, -1, nil)
+            sqlite3_bind_text(statement, 4, langStr.utf8String, -1, nil)
             sqlite3_bind_int64(statement, 5, Int64(Date().timeIntervalSince1970))
-            
+
             if sqlite3_step(statement) != SQLITE_DONE {
                 print("[DB] Error saving project: \(String(cString: sqlite3_errmsg(db)))")
             }
@@ -139,7 +145,7 @@ class DatabaseManager {
     func getAllProjects() -> [(id: String, name: String, path: String, language: String?)] {
         let sql = "SELECT id, name, path, language FROM projects ORDER BY last_scanned DESC"
         var results: [(String, String, String, String?)] = []
-        
+
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
             while sqlite3_step(statement) == SQLITE_ROW {
@@ -155,6 +161,31 @@ class DatabaseManager {
         }
         sqlite3_finalize(statement)
         return results
+    }
+
+    /// Get cached projects as Project objects for instant display
+    func getCachedProjects() -> [Project] {
+        let sql = "SELECT name, path, language FROM projects ORDER BY name ASC"
+        var projects: [Project] = []
+
+        var statement: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
+            while sqlite3_step(statement) == SQLITE_ROW {
+                let name = String(cString: sqlite3_column_text(statement, 0))
+                let path = String(cString: sqlite3_column_text(statement, 1))
+
+                let project = Project(name: name, path: path)
+
+                if let langPtr = sqlite3_column_text(statement, 2) {
+                    let langStr = String(cString: langPtr)
+                    project.language = ProjectLanguage(rawValue: langStr) ?? .terminal
+                }
+
+                projects.append(project)
+            }
+        }
+        sqlite3_finalize(statement)
+        return projects
     }
     
     func getProject(byPath path: String) -> (id: String, isFavorite: Bool, notes: String?)? {
@@ -283,13 +314,108 @@ class DatabaseManager {
     
     func markMessagesAsRead(sessionId: String) {
         let sql = "UPDATE messages SET read = 1 WHERE session_id = ?"
-        
+
         var statement: OpaquePointer?
         if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
             sqlite3_bind_text(statement, 1, sessionId, -1, nil)
             sqlite3_step(statement)
         }
         sqlite3_finalize(statement)
+    }
+
+    func markMessageAsRead(id: Int) {
+        let sql = "UPDATE messages SET read = 1 WHERE id = ?"
+
+        var statement: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
+            sqlite3_bind_int(statement, 1, Int32(id))
+            sqlite3_step(statement)
+        }
+        sqlite3_finalize(statement)
+    }
+
+    func markAllMessagesAsRead() {
+        let sql = "UPDATE messages SET read = 1"
+
+        var statement: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
+            sqlite3_step(statement)
+        }
+        sqlite3_finalize(statement)
+    }
+
+    struct InboxMessage {
+        let id: Int
+        let sessionId: String
+        let type: String
+        let content: String
+        let timestamp: Date
+        let isRead: Bool
+    }
+
+    func getAllMessages(sessionId: String? = nil, unreadOnly: Bool = false, limit: Int = 100) -> [InboxMessage] {
+        var sql = "SELECT id, session_id, type, content, timestamp, read FROM messages"
+        var conditions: [String] = []
+
+        if let _ = sessionId {
+            conditions.append("session_id = ?")
+        }
+        if unreadOnly {
+            conditions.append("read = 0")
+        }
+
+        if !conditions.isEmpty {
+            sql += " WHERE " + conditions.joined(separator: " AND ")
+        }
+        sql += " ORDER BY timestamp DESC LIMIT ?"
+
+        var results: [InboxMessage] = []
+        var statement: OpaquePointer?
+
+        if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
+            var paramIndex: Int32 = 1
+            if let sid = sessionId {
+                sqlite3_bind_text(statement, paramIndex, sid, -1, nil)
+                paramIndex += 1
+            }
+            sqlite3_bind_int(statement, paramIndex, Int32(limit))
+
+            while sqlite3_step(statement) == SQLITE_ROW {
+                let id = Int(sqlite3_column_int(statement, 0))
+                let sessionId = String(cString: sqlite3_column_text(statement, 1))
+                let type = String(cString: sqlite3_column_text(statement, 2))
+                let content = String(cString: sqlite3_column_text(statement, 3))
+                let timestamp = Date(timeIntervalSince1970: Double(sqlite3_column_int64(statement, 4)))
+                let isRead = sqlite3_column_int(statement, 5) != 0
+
+                results.append(InboxMessage(
+                    id: id,
+                    sessionId: sessionId,
+                    type: type,
+                    content: content,
+                    timestamp: timestamp,
+                    isRead: isRead
+                ))
+            }
+        }
+        sqlite3_finalize(statement)
+        return results
+    }
+
+    func getUniqueSessions() -> [String] {
+        let sql = "SELECT DISTINCT session_id FROM messages ORDER BY session_id"
+        var sessions: [String] = []
+
+        var statement: OpaquePointer?
+        if sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK {
+            while sqlite3_step(statement) == SQLITE_ROW {
+                if let ptr = sqlite3_column_text(statement, 0) {
+                    sessions.append(String(cString: ptr))
+                }
+            }
+        }
+        sqlite3_finalize(statement)
+        return sessions
     }
     
     // MARK: - Recent Chats

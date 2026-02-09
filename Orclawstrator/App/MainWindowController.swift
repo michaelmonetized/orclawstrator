@@ -106,7 +106,21 @@ class MainWindowController: NSWindowController {
         mainContentView.showDashboard()
         window?.title = "🦞 Orclawstrator"
     }
-    
+
+    func showInbox() {
+        currentDetailProject = nil
+        mainContentView.showInbox()
+        window?.title = "🦞 Inbox"
+    }
+
+    func refreshDashboard() {
+        mainContentView.showDashboard()
+    }
+
+    func getProjects() -> [Project] {
+        return ProjectScanner.shared.cachedProjects
+    }
+
     override func showWindow(_ sender: Any?) {
         super.showWindow(sender)
         window?.makeKeyAndOrderFront(nil)

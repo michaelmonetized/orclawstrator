@@ -1,4 +1,5 @@
 import Cocoa
+import SwiftTerm
 
 /// Project detail view with split pane: markdown viewer + agent activity
 class ProjectDetailViewController: NSViewController {
@@ -108,14 +109,17 @@ class ProjectDetailViewController: NSViewController {
 // MARK: - Project Header View
 
 class ProjectHeaderView: NSView {
-    
+
     private var backButton: NSButton!
     private var titleLabel: NSTextField!
     private var pathLabel: NSTextField!
     private var languageIcon: NSTextField!
+    private var branchPopup: NSPopUpButton!
     private var statusPills: NSStackView!
-    
+    private var currentProject: Project?
+
     var onBack: (() -> Void)?
+    var onBranchChange: ((String) -> Void)?
     
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -159,7 +163,15 @@ class ProjectHeaderView: NSView {
         pathLabel.textColor = Catppuccin.subtext0
         pathLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(pathLabel)
-        
+
+        // Branch popup
+        branchPopup = NSPopUpButton()
+        branchPopup.font = NSFont.systemFont(ofSize: 11)
+        branchPopup.target = self
+        branchPopup.action = #selector(branchSelected)
+        branchPopup.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(branchPopup)
+
         // Status pills
         statusPills = NSStackView()
         statusPills.orientation = .horizontal
@@ -180,17 +192,32 @@ class ProjectHeaderView: NSView {
             
             pathLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             pathLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 2),
-            
+
+            branchPopup.leadingAnchor.constraint(equalTo: pathLabel.trailingAnchor, constant: 12),
+            branchPopup.centerYAnchor.constraint(equalTo: pathLabel.centerYAnchor),
+            branchPopup.widthAnchor.constraint(lessThanOrEqualToConstant: 200),
+
             statusPills.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             statusPills.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
     
     func configure(with project: Project) {
+        currentProject = project
         titleLabel.stringValue = project.name
         pathLabel.stringValue = project.path
         languageIcon.stringValue = project.language.icon
-        
+
+        // Populate branch popup
+        branchPopup.removeAllItems()
+        for branch in project.gitState.branches {
+            branchPopup.addItem(withTitle: branch)
+        }
+        // Select current branch
+        if let index = project.gitState.branches.firstIndex(of: project.gitState.activeBranch) {
+            branchPopup.selectItem(at: index)
+        }
+
         // Clear and rebuild status pills
         statusPills.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
@@ -242,351 +269,260 @@ class ProjectHeaderView: NSView {
     @objc private func backClicked() {
         onBack?()
     }
+
+    @objc private func branchSelected() {
+        guard let project = currentProject,
+              let selectedBranch = branchPopup.titleOfSelectedItem,
+              selectedBranch != project.gitState.activeBranch else { return }
+
+        // Checkout the branch
+        let projectPath = (project.path as NSString).expandingTildeInPath
+        let shell = ShellExecutor.shared
+        let result = shell.run("git checkout \(selectedBranch)", in: projectPath)
+
+        if result.exitCode == 0 {
+            onBranchChange?(selectedBranch)
+        } else {
+            // Revert popup to current branch
+            if let index = project.gitState.branches.firstIndex(of: project.gitState.activeBranch) {
+                branchPopup.selectItem(at: index)
+            }
+            print("[Git] Failed to checkout branch: \(result.output)")
+        }
+    }
 }
 
-// MARK: - Markdown Panel View
+// MARK: - Markdown Panel View (Embedded Terminal with nvim)
 
 class MarkdownPanelView: NSView {
-    
+
     private var tabBar: NSSegmentedControl!
-    private var scrollView: NSScrollView!
-    private var textView: NSTextView!
-    private var saveButton: NSButton!
+    private var terminalView: EmbeddedTerminalView!
     private var statusLabel: NSTextField!
     private var currentProject: Project?
     private var currentFilePath: String?
-    private var isEditing: Bool = false
-    
+
     private let tabFiles = ["README.md", "PLAN.md", "ROADMAP.md", "CHANGELOG.md"]
-    
+
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         setupUI()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupUI()
     }
-    
+
     private func setupUI() {
         wantsLayer = true
-        layer?.backgroundColor = Catppuccin.mantle.withAlphaComponent(0.7).cgColor
+        layer?.backgroundColor = Catppuccin.base.cgColor
         layer?.cornerRadius = 8
-        
+
         // Tab bar
         tabBar = NSSegmentedControl(labels: ["README", "PLAN", "ROADMAP", "CHANGELOG"], trackingMode: .selectOne, target: self, action: #selector(tabChanged))
         tabBar.selectedSegment = 0
         tabBar.translatesAutoresizingMaskIntoConstraints = false
         addSubview(tabBar)
-        
-        // Save button
-        saveButton = NSButton(title: "Save", target: self, action: #selector(saveFile))
-        saveButton.bezelStyle = .rounded
-        saveButton.contentTintColor = Catppuccin.green
-        saveButton.isHidden = true
-        saveButton.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(saveButton)
-        
+
         // Status label
-        statusLabel = NSTextField(labelWithString: "")
-        statusLabel.font = NSFont.systemFont(ofSize: 10)
-        statusLabel.textColor = Catppuccin.subtext0
+        statusLabel = NSTextField(labelWithString: "nvim")
+        statusLabel.font = NSFont.monospacedSystemFont(ofSize: 10, weight: .medium)
+        statusLabel.textColor = Catppuccin.green
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(statusLabel)
-        
-        // Scroll view with text view for markdown
-        scrollView = NSScrollView()
-        scrollView.hasVerticalScroller = true
-        scrollView.autohidesScrollers = true
-        scrollView.borderType = .noBorder
-        scrollView.drawsBackground = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(scrollView)
-        
-        // Editable text view
-        textView = NSTextView()
-        textView.isEditable = true
-        textView.isSelectable = true
-        textView.isRichText = false
-        textView.allowsUndo = true
-        textView.backgroundColor = Catppuccin.base.withAlphaComponent(0.5)
-        textView.textColor = Catppuccin.text
-        textView.insertionPointColor = Catppuccin.text
-        textView.font = NSFont.monospacedSystemFont(ofSize: 13, weight: .regular)
-        textView.textContainerInset = NSSize(width: 16, height: 16)
-        textView.autoresizingMask = [.width, .height]
-        textView.delegate = self
-        
-        scrollView.documentView = textView
-        
+
+        // Terminal view for nvim
+        terminalView = EmbeddedTerminalView()
+        terminalView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(terminalView)
+
         NSLayoutConstraint.activate([
             tabBar.topAnchor.constraint(equalTo: topAnchor, constant: 8),
             tabBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            
-            saveButton.centerYAnchor.constraint(equalTo: tabBar.centerYAnchor),
-            saveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-            
+
             statusLabel.centerYAnchor.constraint(equalTo: tabBar.centerYAnchor),
-            statusLabel.trailingAnchor.constraint(equalTo: saveButton.leadingAnchor, constant: -8),
-            
-            scrollView.topAnchor.constraint(equalTo: tabBar.bottomAnchor, constant: 8),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            statusLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
+
+            terminalView.topAnchor.constraint(equalTo: tabBar.bottomAnchor, constant: 8),
+            terminalView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            terminalView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            terminalView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
-    
+
     func loadProject(_ project: Project) {
         currentProject = project
         loadCurrentTab()
     }
-    
+
     @objc private func tabChanged() {
-        if isEditing {
-            saveFile()
-        }
         loadCurrentTab()
     }
-    
+
     private func loadCurrentTab() {
-        guard let project = currentProject else {
-            textView.string = "No project selected"
-            return
-        }
-        
+        guard let project = currentProject else { return }
+
         let filename = tabFiles[tabBar.selectedSegment]
-        
-        // Properly expand the path
-        let projectPath = (project.path as NSString).expandingTildeInPath
+
+        var projectPath = project.path
+        if projectPath.hasPrefix("~") {
+            projectPath = (projectPath as NSString).expandingTildeInPath
+        }
         let filePath = (projectPath as NSString).appendingPathComponent(filename)
-        
+
         currentFilePath = filePath
-        isEditing = false
-        saveButton.isHidden = true
-        
-        print("[Markdown] Loading: \(filePath)")
-        
+        statusLabel.stringValue = "nvim \(filename)"
+
+        // Create file if it doesn't exist
         let fileManager = FileManager.default
-        
-        if fileManager.fileExists(atPath: filePath) {
-            do {
-                let content = try String(contentsOfFile: filePath, encoding: .utf8)
-                print("[Markdown] Loaded \(content.count) characters from \(filename)")
-                displayMarkdown(content)
-                statusLabel.stringValue = "Loaded ✓"
-                statusLabel.textColor = Catppuccin.green
-            } catch {
-                print("[Markdown] Error reading \(filename): \(error)")
-                textView.string = "Error reading \(filename):\n\(error.localizedDescription)"
-                textView.textColor = Catppuccin.red
-                statusLabel.stringValue = "Error"
-                statusLabel.textColor = Catppuccin.red
-            }
-        } else {
-            print("[Markdown] File not found: \(filePath)")
-            // File doesn't exist - show template
+        if !fileManager.fileExists(atPath: filePath) {
             let template = createTemplate(for: filename, projectName: project.name)
-            textView.string = template
-            textView.textColor = Catppuccin.subtext0
-            statusLabel.stringValue = "New file"
-            statusLabel.textColor = Catppuccin.yellow
+            try? template.write(toFile: filePath, atomically: true, encoding: .utf8)
         }
-        
-        // Clear status after delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            self?.statusLabel.stringValue = ""
-        }
+
+        // Launch nvim in the terminal view
+        terminalView.runCommand("nvim '\(filePath)'", workingDirectory: projectPath)
     }
-    
+
     private func createTemplate(for filename: String, projectName: String) -> String {
-        let title = filename.replacingOccurrences(of: ".md", with: "")
         switch filename {
         case "README.md":
-            return """
-            # \(projectName)
-            
-            ## Description
-            
-            TODO: Describe what this project does.
-            
-            ## Installation
-            
-            TODO: Add installation instructions.
-            
-            ## Usage
-            
-            TODO: Add usage examples.
-            
-            ## License
-            
-            MIT
-            """
+            return "# \(projectName)\n\nDescribe your project here.\n"
         case "PLAN.md":
-            return """
-            # \(projectName) - Development Plan
-            
-            ## Goals
-            
-            - [ ] Goal 1
-            - [ ] Goal 2
-            
-            ## Current Sprint
-            
-            ### In Progress
-            
-            - [ ] Task 1
-            
-            ### Done
-            
-            - [x] Initial setup
-            """
+            return "# \(projectName) - Plan\n\n## Goals\n\n- [ ] Goal 1\n"
         case "ROADMAP.md":
-            return """
-            # \(projectName) - Roadmap
-            
-            ## v1.0 (Current)
-            
-            - [ ] Core features
-            - [ ] Basic UI
-            
-            ## v1.1 (Next)
-            
-            - [ ] Additional features
-            - [ ] Improvements
-            
-            ## Future
-            
-            - [ ] Long-term goals
-            """
+            return "# \(projectName) - Roadmap\n\n## v1.0\n\n- [ ] Feature 1\n"
         case "CHANGELOG.md":
-            return """
-            # Changelog
-            
-            All notable changes to \(projectName) will be documented in this file.
-            
-            ## [Unreleased]
-            
-            ### Added
-            - Initial project setup
-            
-            ### Changed
-            
-            ### Fixed
-            """
+            return "# Changelog\n\n## [Unreleased]\n\n### Added\n- Initial setup\n"
         default:
-            return "# \(title)\n\nStart writing here..."
+            return "# \(filename)\n"
         }
-    }
-    
-    @objc private func saveFile() {
-        guard let filePath = currentFilePath else { return }
-        
-        let content = textView.string
-        do {
-            // Create directory if needed
-            let directory = (filePath as NSString).deletingLastPathComponent
-            try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
-            
-            try content.write(toFile: filePath, atomically: true, encoding: .utf8)
-            isEditing = false
-            saveButton.isHidden = true
-            statusLabel.stringValue = "Saved ✓"
-            statusLabel.textColor = Catppuccin.green
-            
-            print("[Markdown] Saved to: \(filePath)")
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-                self?.statusLabel.stringValue = ""
-            }
-        } catch {
-            statusLabel.stringValue = "Save failed"
-            statusLabel.textColor = Catppuccin.red
-            print("[Markdown] Save error: \(error)")
-        }
-    }
-    
-    private func displayMarkdown(_ markdown: String) {
-        let attributed = renderMarkdown(markdown)
-        textView.textStorage?.setAttributedString(attributed)
-    }
-    
-    private func renderMarkdown(_ markdown: String) -> NSAttributedString {
-        let result = NSMutableAttributedString()
-        let lines = markdown.split(separator: "\n", omittingEmptySubsequences: false)
-        
-        let normalFont = NSFont.monospacedSystemFont(ofSize: 13, weight: .regular)
-        let h1Font = NSFont.systemFont(ofSize: 24, weight: .bold)
-        let h2Font = NSFont.systemFont(ofSize: 20, weight: .bold)
-        let h3Font = NSFont.systemFont(ofSize: 16, weight: .semibold)
-        let codeFont = NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
-        
-        var inCodeBlock = false
-        
-        for line in lines {
-            let lineStr = String(line)
-            var attrs: [NSAttributedString.Key: Any] = [
-                .font: normalFont,
-                .foregroundColor: Catppuccin.text
-            ]
-            var text = lineStr
-            
-            // Code blocks
-            if lineStr.hasPrefix("```") {
-                inCodeBlock = !inCodeBlock
-                text = lineStr
-                attrs[.foregroundColor] = Catppuccin.overlay2
-            } else if inCodeBlock {
-                attrs[.font] = codeFont
-                attrs[.foregroundColor] = Catppuccin.green
-                attrs[.backgroundColor] = Catppuccin.surface0
-            }
-            // Headers
-            else if lineStr.hasPrefix("### ") {
-                text = String(lineStr.dropFirst(4))
-                attrs[.font] = h3Font
-                attrs[.foregroundColor] = Catppuccin.mauve
-            } else if lineStr.hasPrefix("## ") {
-                text = String(lineStr.dropFirst(3))
-                attrs[.font] = h2Font
-                attrs[.foregroundColor] = Catppuccin.blue
-            } else if lineStr.hasPrefix("# ") {
-                text = String(lineStr.dropFirst(2))
-                attrs[.font] = h1Font
-                attrs[.foregroundColor] = Catppuccin.lavender
-            }
-            // Lists
-            else if lineStr.hasPrefix("- ") || lineStr.hasPrefix("* ") {
-                text = "  • " + String(lineStr.dropFirst(2))
-            } else if lineStr.hasPrefix("  - ") || lineStr.hasPrefix("  * ") {
-                text = "    ◦ " + String(lineStr.dropFirst(4))
-            }
-            // Checkboxes
-            else if lineStr.contains("- [x]") {
-                text = lineStr.replacingOccurrences(of: "- [x]", with: "  ✅")
-                attrs[.foregroundColor] = Catppuccin.green
-            } else if lineStr.contains("- [ ]") {
-                text = lineStr.replacingOccurrences(of: "- [ ]", with: "  ☐")
-                attrs[.foregroundColor] = Catppuccin.subtext0
-            }
-            
-            result.append(NSAttributedString(string: text + "\n", attributes: attrs))
-        }
-        
-        return result
     }
 }
 
-// MARK: - MarkdownPanelView NSTextViewDelegate
+// MARK: - Terminal View (SwiftTerm-based terminal emulator)
 
-extension MarkdownPanelView: NSTextViewDelegate {
-    func textDidChange(_ notification: Notification) {
-        if !isEditing {
-            isEditing = true
-            saveButton.isHidden = false
-            statusLabel.stringValue = "Modified"
-            statusLabel.textColor = Catppuccin.yellow
+class EmbeddedTerminalView: NSView, LocalProcessTerminalViewDelegate {
+
+    private var terminalView: LocalProcessTerminalView!
+    private var currentWorkingDirectory: String = ""
+    private var currentCommand: String = ""
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupUI()
+    }
+
+    private func setupUI() {
+        wantsLayer = true
+        layer?.backgroundColor = Catppuccin.base.cgColor
+
+        // Create SwiftTerm terminal view
+        terminalView = LocalProcessTerminalView(frame: bounds)
+        terminalView.translatesAutoresizingMaskIntoConstraints = false
+        terminalView.processDelegate = self
+
+        // Configure terminal appearance
+        terminalView.font = NSFont.monospacedSystemFont(ofSize: 13, weight: .regular)
+        terminalView.nativeForegroundColor = Catppuccin.text
+        terminalView.nativeBackgroundColor = Catppuccin.base
+
+        // Set Catppuccin color palette
+        configureCatppuccinPalette()
+
+        addSubview(terminalView)
+
+        NSLayoutConstraint.activate([
+            terminalView.topAnchor.constraint(equalTo: topAnchor),
+            terminalView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            terminalView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            terminalView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+
+    private func configureCatppuccinPalette() {
+        // Catppuccin Macchiato palette for terminal - use SwiftTerm Color
+        func toColor(_ c: NSColor) -> Color {
+            var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+            c.getRed(&r, green: &g, blue: &b, alpha: &a)
+            return Color(red: UInt16(r * 65535), green: UInt16(g * 65535), blue: UInt16(b * 65535))
         }
+
+        let palette: [Color] = [
+            toColor(Catppuccin.surface1),      // 0: black
+            toColor(Catppuccin.red),           // 1: red
+            toColor(Catppuccin.green),         // 2: green
+            toColor(Catppuccin.yellow),        // 3: yellow
+            toColor(Catppuccin.blue),          // 4: blue
+            toColor(Catppuccin.pink),          // 5: magenta
+            toColor(Catppuccin.teal),          // 6: cyan
+            toColor(Catppuccin.subtext1),      // 7: white
+            toColor(Catppuccin.overlay0),      // 8: bright black
+            toColor(Catppuccin.red),           // 9: bright red
+            toColor(Catppuccin.green),         // 10: bright green
+            toColor(Catppuccin.yellow),        // 11: bright yellow
+            toColor(Catppuccin.blue),          // 12: bright blue
+            toColor(Catppuccin.pink),          // 13: bright magenta
+            toColor(Catppuccin.sky),           // 14: bright cyan
+            toColor(Catppuccin.text)           // 15: bright white
+        ]
+        terminalView.installColors(palette)
+    }
+
+    func runCommand(_ command: String, workingDirectory: String) {
+        currentWorkingDirectory = workingDirectory
+        currentCommand = command
+
+        // Set environment for proper terminal behavior
+        var env = ProcessInfo.processInfo.environment
+        env["TERM"] = "xterm-256color"
+        env["LANG"] = "en_US.UTF-8"
+        env["LC_ALL"] = "en_US.UTF-8"
+        env["HOME"] = NSHomeDirectory()
+        env["SHELL"] = "/bin/zsh"
+
+        // Start the process with nvim or shell command
+        terminalView.startProcess(
+            executable: "/bin/zsh",
+            args: ["-c", command],
+            environment: Array(env.map { "\($0.key)=\($0.value)" }),
+            execName: "zsh"
+        )
+    }
+
+    // MARK: - LocalProcessTerminalViewDelegate
+
+    func sizeChanged(source: LocalProcessTerminalView, newCols: Int, newRows: Int) {
+        // Terminal size changed - SwiftTerm handles this automatically
+    }
+
+    func setTerminalTitle(source: LocalProcessTerminalView, title: String) {
+        // Could update tab title here if needed
+    }
+
+    func hostCurrentDirectoryUpdate(source: SwiftTerm.TerminalView, directory: String?) {
+        if let dir = directory {
+            currentWorkingDirectory = dir
+        }
+    }
+
+    func processTerminated(source: SwiftTerm.TerminalView, exitCode: Int32?) {
+        // Process ended - could notify parent view
+        DispatchQueue.main.async { [weak self] in
+            self?.terminalView.feed(text: "\r\n[Process exited with code \(exitCode ?? -1)]\r\n")
+        }
+    }
+
+    override var acceptsFirstResponder: Bool { true }
+
+    override func becomeFirstResponder() -> Bool {
+        return terminalView.becomeFirstResponder()
     }
 }
 

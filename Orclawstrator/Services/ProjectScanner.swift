@@ -10,20 +10,24 @@ class ProjectScanner {
     private let graphiteService = GraphiteService.shared
     private let vercelService = VercelService.shared
     private let fileManager = FileManager.default
-    
+
+    // Cached projects from last scan
+    private(set) var cachedProjects: [Project] = []
+
     // Callback for progress updates
     var onProjectScanned: ((Project, Int, Int) -> Void)?
-    
+
     private init() {}
     
     /// Scan a directory for projects
     func scanProjects(in directory: String, completion: @escaping ([Project]) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
-            
+
             let projects = self.scanProjectsSync(in: directory)
-            
+
             DispatchQueue.main.async {
+                self.cachedProjects = projects
                 completion(projects)
             }
         }

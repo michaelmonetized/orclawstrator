@@ -16,10 +16,13 @@ class DashboardView: NSView {
     var onProjectSelected: ((Project) -> Void)?
     
     // MARK: - Data
-    
+
     private var projects: [Project] = []
     private let projectScanner = ProjectScanner.shared
     private let openClawService = OpenClawService.shared
+    private let database = DatabaseManager.shared
+    private var agentStatsTimer: Timer?
+    private var isLoadingFromScan = false
     
     // MARK: - Column Identifiers
     
@@ -136,17 +139,56 @@ class DashboardView: NSView {
     }
     
     // MARK: - Data Loading
-    
+
     private func loadProjects() {
+        // Step 1: Load cached projects immediately for instant display
+        let cachedProjects = database.getCachedProjects()
+        if !cachedProjects.isEmpty {
+            self.projects = cachedProjects
+            self.tableView.reloadData()
+            let buildStats = self.calculateBuildStats()
+            self.topStatusBar?.updateStats(projectCount: cachedProjects.count, buildStats: buildStats)
+        }
+
+        // Step 2: Scan in background and update incrementally
+        isLoadingFromScan = true
+        projectScanner.onProjectScanned = { [weak self] project, current, total in
+            guard let self = self else { return }
+            // Save to database for next launch
+            self.database.saveProject(project)
+            // Update or add project in list
+            self.updateProject(project)
+        }
+
         projectScanner.scanProjects(in: "~/Projects") { [weak self] projects in
             guard let self = self else { return }
+            self.isLoadingFromScan = false
             self.projects = projects
             self.tableView.reloadData()
             let buildStats = self.calculateBuildStats()
             self.topStatusBar?.updateStats(projectCount: projects.count, buildStats: buildStats)
         }
     }
-    
+
+    /// Update a single project in the list (for incremental updates)
+    private func updateProject(_ project: Project) {
+        if let index = projects.firstIndex(where: { $0.path == project.path }) {
+            // Update existing project
+            projects[index] = project
+            let indexSet = IndexSet(integer: index)
+            tableView.reloadData(forRowIndexes: indexSet, columnIndexes: IndexSet(integersIn: 0..<tableView.numberOfColumns))
+        } else {
+            // Add new project and sort
+            projects.append(project)
+            projects.sort { $0.name.lowercased() < $1.name.lowercased() }
+            tableView.reloadData()
+        }
+
+        // Update stats
+        let buildStats = calculateBuildStats()
+        topStatusBar?.updateStats(projectCount: projects.count, buildStats: buildStats)
+    }
+
     func refreshProjects() {
         loadProjects()
     }
@@ -169,12 +211,17 @@ class DashboardView: NSView {
     }
     
     // MARK: - Agent Stats Polling
-    
+
     private func startAgentStatsPolling() {
-        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+        agentStatsTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
             self?.updateAgentStats()
         }
         updateAgentStats()
+    }
+
+    deinit {
+        agentStatsTimer?.invalidate()
+        agentStatsTimer = nil
     }
     
     private func updateAgentStats() {
@@ -342,32 +389,10 @@ extension DashboardView: NSTableViewDelegate {
     }
     
     private func createStacksCell(for project: Project) -> NSView {
-        let cell = NSStackView()
-        cell.orientation = .horizontal
-        cell.spacing = 6
-        cell.alignment = .centerY
-        
-        // Stack icon
-        let stackIcon = NSTextField(labelWithString: "n̄")
-        stackIcon.font = NSFont.systemFont(ofSize: 11, weight: .bold)
-        stackIcon.textColor = Catppuccin.blue
-        cell.addArrangedSubview(stackIcon)
-        
-        // Stack count
-        let stackCount = NSTextField(labelWithString: String(format: "%02d", project.stackCount))
-        stackCount.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .bold)
-        stackCount.textColor = Catppuccin.blue
-        cell.addArrangedSubview(stackCount)
-        
-        // Label
-        let label = NSTextField(labelWithString: "stacked")
-        label.font = NSFont.systemFont(ofSize: 10)
-        label.textColor = Catppuccin.subtext0
-        cell.addArrangedSubview(label)
-        
+        let cell = StacksCellView(project: project)
         return cell
     }
-    
+
     private func createGitStatusCell(for project: Project) -> NSView {
         let cell = NSStackView()
         cell.orientation = .horizontal
@@ -417,21 +442,22 @@ extension DashboardView: NSTableViewDelegate {
     }
     
     private func createActionsCell(for project: Project, row: Int) -> NSView {
+        let container = NSView()
+
         let cell = NSStackView()
         cell.orientation = .horizontal
-        cell.spacing = 8
+        cell.spacing = 4
         cell.alignment = .centerY
-        
-        // Action buttons matching mockup icons
+        cell.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(cell)
+
+        // Action buttons - minimal set
         let actions: [(icon: String, tooltip: String)] = [
             ("📂", "Open folder"),
-            ("👤", "View agent"),
-            ("○○○", "More options"),
-            ("📊", "Statistics"),
-            ("✏️", "Edit"),
-            ("⊕", "Add")
+            ("🔗", "Open in terminal"),
+            ("⋯", "More options")
         ]
-        
+
         for (icon, tooltip) in actions {
             let button = NSButton(title: icon, target: self, action: #selector(actionButtonClicked(_:)))
             button.bezelStyle = .inline
@@ -442,24 +468,96 @@ extension DashboardView: NSTableViewDelegate {
             button.contentTintColor = Catppuccin.overlay1
             cell.addArrangedSubview(button)
         }
-        
-        return cell
+
+        // Pin to right side
+        NSLayoutConstraint.activate([
+            cell.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -4),
+            cell.centerYAnchor.constraint(equalTo: container.centerYAnchor)
+        ])
+
+        return container
     }
     
     @objc private func actionButtonClicked(_ sender: NSButton) {
         let row = sender.tag
         guard row >= 0, row < projects.count else { return }
         let project = projects[row]
-        
+
         switch sender.title {
         case "📂":
             NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: project.path)
-        case "👤":
-            // Open agent view
-            onProjectSelected?(project)
+        case "🔗":
+            // Open in terminal
+            let script = "tell application \"Terminal\" to do script \"cd '\(project.path)'\""
+            if let appleScript = NSAppleScript(source: script) {
+                appleScript.executeAndReturnError(nil)
+            }
         default:
             break
         }
+    }
+}
+
+// MARK: - Stacks Cell View (Clickable)
+
+class StacksCellView: NSView {
+    private let project: Project
+    private var popover: PRStackPopover?
+
+    init(project: Project) {
+        self.project = project
+        super.init(frame: .zero)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupUI() {
+        let stack = NSStackView()
+        stack.orientation = .horizontal
+        stack.spacing = 6
+        stack.alignment = .centerY
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(stack)
+
+        // Stack icon
+        let stackIcon = NSTextField(labelWithString: "n̄")
+        stackIcon.font = NSFont.systemFont(ofSize: 11, weight: .bold)
+        stackIcon.textColor = Catppuccin.blue
+        stack.addArrangedSubview(stackIcon)
+
+        // Stack count
+        let stackCount = NSTextField(labelWithString: String(format: "%02d", project.stackCount))
+        stackCount.font = NSFont.monospacedSystemFont(ofSize: 11, weight: .bold)
+        stackCount.textColor = Catppuccin.blue
+        stack.addArrangedSubview(stackCount)
+
+        // Label
+        let label = NSTextField(labelWithString: "stacked")
+        label.font = NSFont.systemFont(ofSize: 10)
+        label.textColor = Catppuccin.subtext0
+        stack.addArrangedSubview(label)
+
+        NSLayoutConstraint.activate([
+            stack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stack.topAnchor.constraint(equalTo: topAnchor),
+            stack.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+
+        // Make clickable if has stacks
+        if project.stackCount > 0 {
+            let click = NSClickGestureRecognizer(target: self, action: #selector(showStackPopover))
+            addGestureRecognizer(click)
+            toolTip = "Click to view PR stack"
+        }
+    }
+
+    @objc private func showStackPopover() {
+        popover = PRStackPopover(project: project)
+        popover?.show(relativeTo: bounds, of: self, preferredEdge: .maxY)
     }
 }
 

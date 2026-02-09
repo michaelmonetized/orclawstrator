@@ -68,15 +68,16 @@
 - [x] Left: Markdown viewer/editor tabs
 - [x] Right: Agent activity stream
 
-### 3.2 Markdown Panel
+### 3.2 Markdown Panel (Embedded nvim via SwiftTerm)
 - [x] Tab bar for project files (README, PLAN, CHANGELOG, ROADMAP)
-- [x] Live markdown rendering (like nvim markdown plugins)
-- [ ] Edit mode toggle
-- [ ] Save to file on edit
+- [x] Full terminal emulation with SwiftTerm library
+- [x] nvim launches for each tab with proper VT100/xterm-256color support
+- [x] Catppuccin color palette in terminal
+- [x] Edit + save via nvim (native nvim behavior)
 
 ### 3.3 Agent Activity Panel
 - [x] Streaming text view for agent output
-- [ ] ANSI color support
+- [x] ANSI color support (via SwiftTerm for nvim panel)
 - [x] Auto-scroll with manual override
 - [ ] Copy/clear actions
 
