@@ -88,10 +88,10 @@
 - [x] Branch switcher dropdown
 
 ### 3.5 PR Stack Viewer
-- [ ] Click stack count to open viewer
-- [ ] Comments thread (like GitHub/Graphite)
+- [x] Click stack count to open viewer (`PRStackPopover`)
+- [x] Stacked PRs with GitHub data
+- [ ] Comments thread (like GitHub/Graphite) — deeper thread UI still open
 - [ ] Diffs below comments
-- [ ] Expand/collapse sections
 
 ---
 
