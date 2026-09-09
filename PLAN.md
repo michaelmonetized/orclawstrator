@@ -79,13 +79,13 @@
 - [x] Streaming text view for agent output
 - [x] ANSI color support (via SwiftTerm for nvim panel)
 - [x] Auto-scroll with manual override
-- [ ] Copy/clear actions
+- [x] Copy/clear actions (post-Feb polish; see AUTOPSY)
 
 ### 3.4 Chat Integration
 - [x] Chat history view
 - [x] Message input field
 - [x] Send to agent action
-- [ ] Branch switcher dropdown
+- [x] Branch switcher dropdown
 
 ### 3.5 PR Stack Viewer
 - [ ] Click stack count to open viewer
@@ -98,14 +98,14 @@
 ## Phase 4: Global Inbox
 
 ### 4.1 Inbox View
-- [ ] Stream of all agent messages
-- [ ] Filter by project/agent
-- [ ] Mark as read/unread
-- [ ] Quick actions (reply, open project)
-- [ ] Notification badges
+- [x] Stream of all agent messages (`InboxView`)
+- [x] Filter by session
+- [x] Mark as read / mark all read (DatabaseManager)
+- [x] Sidebar inbox button + unread badge
+- [ ] Richer per-project filters / reply actions (remaining)
 
 ### 4.2 Real-time Updates
-- [ ] WebSocket connection to Gateway
+- [x] WebSocket connection to Gateway (OpenClawService)
 - [ ] Push notifications for important messages
 - [ ] Badge count in Dock icon
 
@@ -113,55 +113,58 @@
 
 ## Phase 5: Integrations
 
+> Note: Core CLI integrations landed in Phase 1.3 and are used by the dashboard at HEAD. Checkboxes below reflect that.
+
 ### 5.1 Git Operations
-- [ ] `git status --porcelain` parsing
-- [ ] `git log --oneline` for history
-- [ ] `git branch -a` for branch list
-- [ ] First commit date extraction
-- [ ] Last commit timestamps
+- [x] `git status --porcelain` parsing
+- [x] `git log --oneline` for history
+- [x] `git branch -a` for branch list
+- [x] First commit date extraction
+- [x] Last commit timestamps
 
 ### 5.2 GitHub CLI
-- [ ] `gh issue list --json` parsing
-- [ ] `gh pr list --json` parsing
-- [ ] Issue/PR counts per project
+- [x] `gh issue list --json` parsing
+- [x] `gh pr list --json` parsing
+- [x] Issue/PR counts per project
 
 ### 5.3 Graphite CLI
-- [ ] `gt log short --stack` parsing
-- [ ] `gt stack` for PR details
-- [ ] Stack comment counts via API
+- [x] `gt log short --stack` parsing
+- [x] Stack details + PR Stack Viewer (`PRStackPopover`)
+- [ ] Stack comment counts via API (partial)
 
 ### 5.4 Vercel CLI
-- [ ] `vercel ls --json` parsing
-- [ ] Deployment status mapping
+- [x] `vercel ls` / inspect integration for build status
+- [x] Deployment status mapping
 - [ ] Build log fetching on error
 
 ### 5.5 Language Detection
-- [ ] Scan for Package.swift (Swift)
-- [ ] Scan for package.json + tsconfig (TypeScript)
-- [ ] Scan for Cargo.toml (Rust)
-- [ ] Scan for Makefile/CMakeLists (C/C++)
-- [ ] Scan for pyproject.toml (Python)
-- [ ] Default to Terminal icon
+- [x] Scan for Package.swift (Swift)
+- [x] Scan for package.json + tsconfig (TypeScript)
+- [x] Scan for Cargo.toml (Rust)
+- [x] Scan for Makefile/CMakeLists (C/C++)
+- [x] Scan for pyproject.toml (Python)
+- [x] Default to Terminal icon
 
 ---
 
 ## Phase 6: Polish
 
 ### 6.1 Performance
-- [ ] Background scanning (not blocking UI)
+- [x] Caching with SQLite (`~/.orclawstrator/cache.db`)
+- [x] ProjectScanner cache for quick switcher
 - [ ] Incremental updates (file watchers)
-- [ ] Caching with SQLite
 - [ ] Lazy loading for large project lists
 
 ### 6.2 UX
-- [ ] Keyboard shortcuts (Cmd+1-9 for projects)
-- [ ] Quick switcher (Cmd+K)
-- [ ] Search/filter projects
+- [x] Keyboard shortcuts (Cmd+1 dashboard, Cmd+I inbox, Cmd+R refresh, Cmd+1-9 jump, Esc back)
+- [x] Quick switcher (Cmd+K)
+- [ ] Search/filter projects (beyond quick switcher)
 - [ ] Drag-drop project reordering
-- [ ] Custom themes
+- [x] Catppuccin theme (custom themes beyond that still open)
 
 ### 6.3 System Integration
-- [ ] Menu bar icon with quick actions
+- [x] Menu bar icon with quick actions
+- [x] Error banner UI (`ErrorBanner`)
 - [ ] Notifications for build failures
 - [ ] Spotlight integration
 - [ ] Touch Bar support (if applicable)
@@ -237,8 +240,8 @@ Orclawstrator/
 | M2: Git Integration | Week 2 | ✅ |
 | M3: OpenClaw Integration | Week 3 | ✅ |
 | M4: Project Detail View | Week 4 | ✅ |
-| M5: Inbox + Polish | Week 5 | 🟡 In Progress |
-| M6: Beta Release | Week 6 | ⬜ |
+| M5: Inbox + Polish | Week 5 | ✅ (see AUTOPSY 2026-02-09) |
+| M6: Beta Release | Week 6 | 🟡 remaining polish / notifications |
 
 ---
 
@@ -251,4 +254,4 @@ Orclawstrator/
 
 ---
 
-*Last updated: 2026-02-06*
+*Last updated: 2026-09-08 — PLAN parity vs HEAD/AUTOPSY (Phases 4–6 checkboxes synced).*

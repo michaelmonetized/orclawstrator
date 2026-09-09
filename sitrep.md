@@ -1,51 +1,35 @@
 # Orclawstrator
 
-**One-liner:** Native macOS command center for orchestrating AI coding agents across project portfolio.
+**One-liner:** Native macOS command center for orchestrating AI coding agents across a project portfolio.
 
-## Status: **Active Development**
+## Status: **RESUSCITATED / ship-worthy** (see AUTOPSY.md)
 
-- **Last Updated:** 2026-02-09
-- **Tech Stack:** Swift 5.9+, AppKit, SQLite
-- **Completion:** ~85%
+- **Last Updated:** 2026-09-08 (docs parity)
+- **Tech Stack:** Swift 5.9+, AppKit, SQLite, SwiftTerm
+- **Completion:** ~85%+
 
 ## What's Working
-
 - Dashboard with project table (git status, branches, stacks, build status)
-- Project detail view with split pane (markdown editor + agent activity)
-- Git integration (branch count, staged/untracked files, commit dates)
-- GitHub integration via `gh` CLI
-- Graphite integration for stacked PRs
-- Vercel build status integration
-- OpenClaw WebSocket connection for real-time agent output
-- OpenClaw REST API for session management
-- SQLite persistence (~/.orclawstrator/cache.db)
-- Project scanning with language detection
-- Catppuccin color theming
-- Chromeless semi-transparent window
-
-## What's In Progress
-
-- Global Inbox for cross-session messages
-- PR Stack Viewer (click stack count to see details)
-- Cmd+K quick switcher
+- Project detail view with split pane (markdown/nvim via SwiftTerm + agent activity)
+- Git / GitHub (`gh`) / Graphite / Vercel CLI integrations
+- OpenClaw WebSocket + REST session management
+- SQLite persistence (`~/.orclawstrator/cache.db`)
+- Project scanning + language detection
+- Global Inbox (`InboxView`) with read/unread
+- PR Stack Viewer (`PRStackPopover`)
 - Branch switcher dropdown
-- Keyboard shortcuts
+- Cmd+K quick switcher + keyboard shortcuts
+- Menu bar status item + error banner
+- Catppuccin theming
 
-## What's Planned
-
-- Menu bar icon with quick actions
-- System notifications for agent messages
-- Error banner UI (replace console logging)
+## Remaining
+- Push notifications / Dock badge
+- File-watcher incremental updates
+- Deeper stack-comment API counts / build-log-on-error
+- Broader project search/filter + drag-reorder
 
 ## Quick Start
-
 ```bash
 swift build
 .build/debug/Orclawstrator
 ```
-
-## Configuration
-
-Gateway settings stored in SQLite `settings` table:
-- `gateway_host` (default: localhost)
-- `gateway_port` (default: 3377)
